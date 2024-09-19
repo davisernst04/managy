@@ -1,5 +1,10 @@
 # Managy
 
+# For sending fast git commits:
+
+At Managy folder run:
+
+./git-u.bash "Commit Message"
 
 
 ## Getting started
