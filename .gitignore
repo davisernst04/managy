@@ -260,3 +260,19 @@ Thumbs.db
 # React Native
 *.xcworkspace
 *.xcuserstate
+
+
+# Backend
+backend/.env
+backend/.idea/
+backend/api/__pycache__/
+backend/api/migrations/__pycache__/
+backend/backend/__pycache__/
+backend/db.sqlite3
+
+# Frontend
+frontend/.env
+frontend/.idea/
+frontend/.next/
+frontend/node_modules/
+frontend/src/app/
