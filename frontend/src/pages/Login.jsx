@@ -1,4 +1,4 @@
-import Form from "../components/Form.jsx";
+import Form from "@/app/components/Form.jsx";
 
 function Login() {
     return <Form route="api/token/" method="login" />
