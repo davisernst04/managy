@@ -4,7 +4,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
-import ProtectedRoute from "./app/components/ProtectedRoute.jsx"
+import ProtectedRoute from "./components/ProtectedRoute.jsx"
 
 
 function Logout() {

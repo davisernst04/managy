@@ -1,6 +1,6 @@
 'use client';
 
-import Form from "../app/components/Form.jsx";
+import Form from "../components/Form.jsx";
 
 function Register() {
     return <Form route="api/user/register/" method="register" />
