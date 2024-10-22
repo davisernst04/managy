@@ -11,3 +11,14 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Amenity(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    capacity = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="amenity")
+
+    def __str__(self):
+        return self.name
