@@ -5,7 +5,7 @@ import api from '../../api.js';
 import { navigate } from '../../components/actions.js';
 import './viewEvent.css';
 
-export default function ViewEvent({ eventId }) {
+export default function ViewEvent({ eventID }) {
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ export default function ViewEvent({ eventId }) {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const response = await api.get(`/api/events/${eventId}`);
+                const response = await api.get(`/api/events/${eventID}`);
                 if (response.status === 200) {
                     setEvent(response.data);
                 } else {
@@ -27,7 +27,7 @@ export default function ViewEvent({ eventId }) {
         };
 
         fetchEvent();
-    }, [eventId]);
+    }, [eventID]);
 
     if (loading) {
         return <div className="loading-message">Loading...</div>;
