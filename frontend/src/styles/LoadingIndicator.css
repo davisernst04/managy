@@ -1,10 +1,10 @@
-.loader-container {
+.myloader-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.loader {
+.myloader {
     border: 5px solid #f3f3f3; /* Light grey */
     border-top: 5px solid #3498db; /* Blue */
     border-radius: 50%;
