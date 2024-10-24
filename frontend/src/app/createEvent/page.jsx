@@ -4,15 +4,14 @@
 import { useState } from "react";
 import api from "../../api.js";
 import "./createEvent.css";
-import LoadingIndicator from "../../components/LoadingIndicator.jsx";
+import LoadingIndicator from "@/components/LoadingIndicator.jsx";
 
 // logout/page.jsx
-import { navigate } from "../../components/actions.js";
+import { navigate } from "@/components/actions";
 
 // defines a functional component named `CreateEvent`.
-export default function CreateEvent() {
+function CreateEvent() {
     const [eventName, setEventName] = useState("");
-    const [eventID, setEventID] = useState("");
     const [eventDate, setEventDate] = useState("");
     const [eventLocation, setEventLocation] = useState("");
     const [eventTime, setEventTime] = useState("");
@@ -25,18 +24,24 @@ export default function CreateEvent() {
         setLoading(true);
 
         try {
-            const res = await api.post("/api/events", {
+            console.log([eventName, eventID, eventDate, eventTime, eventLocation, eventDescription])
+            const res = await api.post("api/event/create/", {
                 name: eventName,
-                id: eventID,
                 date: eventDate,
                 location: eventLocation,
                 time: eventTime,
                 description: eventDescription,
             });
 
+            let result;
+            result = res.data;
+            console.log(result.message);
+            console.log(result.id);
+
             // If event creation successful, show an alert and navigates to the events page? or specific view page maybe
             if (res.status === 201) {
                 alert("Event created successfully!");
+                //display ID number in alert
                 navigate("/events");
             } else {
                 alert("Failed to create event");
@@ -60,15 +65,6 @@ export default function CreateEvent() {
                     onChange={(e) => setEventName(e.target.value)}
                     placeholder="Event Name"
                     required // input field must be filled out before the form can be submitted
-                />
-
-                <input
-                    className="form-input"
-                    type="number"
-                    value={eventID}
-                    onChange={(e) => setEventID(e.target.value)}
-                    placeholder="Event ID"
-                    required
                 />
 
                 <input
@@ -112,6 +108,8 @@ export default function CreateEvent() {
         </div>
     );
 }
+
+export default CreateEvent;
 // tailwind version
 /*
 return (
