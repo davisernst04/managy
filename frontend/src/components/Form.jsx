@@ -1,12 +1,10 @@
 "use client"
 
 import { useState } from "react";
-import api from "../api.js";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants.js";
-import "../styles/Form.css"
+import api from "@/api.js";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants.js";
+import "@/styles/Form.css"
 import LoadingIndicator from "./LoadingIndicator.jsx";
-
-/*import { redirect } from "next/navigation";*/
 import { navigate } from "./actions.js";
 
 // eslint-disable-next-line react/prop-types
@@ -27,12 +25,10 @@ function Form({ route, method }) {
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate('/');
+                navigate('/example');
             } else {
-                /*A registered user*/
-                /*redirect('/login');*/
+                /*A registered user is redirected to login*/
                 navigate('/login');
-                /*navigate("/login")*/
             }
         } catch (error) {
             alert(error)
@@ -42,24 +38,24 @@ function Form({ route, method }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="form-container">
-            <h1>{name}</h1>
+        <form onSubmit={handleSubmit} className="myform-container">
+            <h1 className="text-3xl text-black font-bold">{name}</h1>
             <input
-                className="form-input"
+                className="myform-input text-black"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
             />
             <input
-                className="form-input"
+                className="myform-input text-black"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
             />
             {loading && <LoadingIndicator />}
-            <button className="form-button" type="submit">
+            <button className="myform-button font-bold" type="submit">
                 {name}
             </button>
         </form>
