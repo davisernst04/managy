@@ -14,4 +14,3 @@ EXPOSE 3000
 
 # Start the Next.js app using the production build
 CMD ["npm", "run", "start"]
-

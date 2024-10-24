@@ -1,12 +1,8 @@
 'use client';
 
-/*import { Navigate } from "react-router-dom";*/
-/*import { useRouter } from 'next/router';*/
-/*import { redirect } from "next/navigation";*/
 import { jwtDecode } from "jwt-decode";
 import api from "../api.js";
-import { REFRESH_TOKEN, ACCESS_TOKEN } from "../constants.js";
-/*import { useState, useEffect } from "react";*/
+import { REFRESH_TOKEN, ACCESS_TOKEN } from "@/constants";
 
 export async function isAuthorized() {
 
