@@ -16,8 +16,9 @@ class AmenityTest(TestCase):
 
         cls.amenity = Amenity.objects.create(
             name="Cool place",
-            description="Nice place",
+            description="Nice place to vibe",
             capacity=10,
+            occupied=False,
             author=cls.test_user
         )
     def test_amenity_creation(self):
@@ -26,15 +27,17 @@ class AmenityTest(TestCase):
         self.assertEqual(self.amenity.name, "Cool place")
         self.assertEqual(self.amenity.description, "Nice place")
         self.assertEqual(self.amenity.capacity, 10)
-        print("Amenity Created: name="+self.amenity.name+",description="+self.amenity.description+",capacity:"+str(self.amenity.capacity))
+        self.assertEqual(self.amenity.occupied,False)
+        print("Amenity Created: name="+self.amenity.name+",description="+self.amenity.description+",capacity:"+str(self.amenity.capacity)+"")
     def test_str_method(self):
         """Test the string representation of the Amenity."""
         self.assertEqual(str(self.amenity), "Cool place")  # Assuming __str__ method returns the name
-
+        print("Testing str:"+str(self.amenity))
 
     def test_capacity_positive(self):
         """Test that the capacity is a positive integer."""
         self.assertGreater(self.amenity.capacity,0)
+        print("Testing capacity:"+str(self.amenity.capacity))
 
     def test_update_amenity(self):
         """Test updating an Amenity instance."""

@@ -24,5 +24,5 @@ class NoteSerializer(serializers.ModelSerializer):
 class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Amenity
-        fields = ["id", "name", "description", "capacity", "created_at", "author"]
+        fields = ["id", "name", "description", "capacity","occupied", "image" , "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
