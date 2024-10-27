@@ -1,9 +1,8 @@
-'use client'
+"use client";
 
 import { withAuth } from "@/components/withAuth.jsx";
 
-const ManageAmeneties = () => {
-  return <div> ManageAmeneties </div> 
-
+const ManageAmenities = () => {
+  return <div> ManageAmeneties </div>;
 };
-export default withAuth(ManageAmeneties)
+export default withAuth(ManageAmenities);
