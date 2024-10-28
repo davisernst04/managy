@@ -17,12 +17,15 @@ function ViewAllEvents() {
     const [sortOrder, setSortOrder] = useState(0);  // 0 = Random, 1 = Ascending, 2 = Descending
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchName, setSearchName] = useState('');
 
+    // 1
     // Fetch events when the sort order changes
     useEffect(() => {
         fetchEvents();
     }, [sortOrder]);
 
+    // Be able to display all events (sorted or not)
     const fetchEvents = async () => {
         setLoading(true);
         try {
@@ -37,5 +40,24 @@ function ViewAllEvents() {
             setLoading(false);
         }
     };
+
+    // 2
+    // Display events with keyword typed or searched by user
+    const searchEventByName = async () => {
+        setLoading(true);
+        try {
+            // CONNECT TO BACK
+            const response = await api.get(`/api/get_event_name/${searchName}`);
+            if (response.status === 200) {
+                 setEvents(response.data);
+            } else { setError('Failed to fetch events'); }
+        } catch (err) {
+            setError('Error fetching events: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 }
 export default ViewAllEvents;
