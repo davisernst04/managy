@@ -58,6 +58,20 @@ function ViewAllEvents() {
         }
     };
 
+    const filterEventsByDate = async () => {
+        setLoading(true);
+        try {
+            // CONNECT TO BACK
+            const response = await api.get(`/api/filter_event_date/${startDate.toISOString()}/${endDate.toISOString()}`);
+            if (response.status === 200) {
+                 setEvents(response.data);
+            } else { setError('Failed to fetch events'); }
+        } catch (err) {
+            setError('Error fetching events: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 }
 export default ViewAllEvents;
