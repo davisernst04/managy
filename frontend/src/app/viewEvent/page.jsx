@@ -18,6 +18,11 @@ function ViewAllEvents() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Fetch events when the sort order changes
+    useEffect(() => {
+        fetchEvents();
+    }, [sortOrder]);
+
     const fetchEvents = async () => {
         setLoading(true);
         try {
