@@ -93,18 +93,6 @@ function ViewAllEvents() {
                 </Image>
                 <h1 className="text-5xl font-bold text-center">View All Events</h1>
 
-                <div>
-                    <h2 className="text-2xl font-semibold mb-4">Sort Events</h2>
-                    <select
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(Number(e.target.value))}
-                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    >
-                        <option value={0}>Random</option>
-                        <option value={1}>Ascending Date</option>
-                        <option value={2}>Descending Date</option>
-                    </select>
-                </div>
 
                 <div className="w-full max-w-4xl space-y-8">
                     <div>
@@ -156,6 +144,20 @@ function ViewAllEvents() {
                             Apply Date Filter
                         </button>
                     </div>
+
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Sort Events</h2>
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(Number(e.target.value))}
+                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        >
+                            <option value={0}>Random</option>
+                            <option value={1}>Ascending Date</option>
+                            <option value={2}>Descending Date</option>
+                        </select>
+                    </div>
+
                     <div>
                         <h2 className="text-2xl font-semibold mb-4">Events</h2>
                         {loading ? (
