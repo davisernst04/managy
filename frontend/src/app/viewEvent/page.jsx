@@ -3,9 +3,9 @@
 import api from '../../api.js';
 import { useState, useEffect } from 'react';
 import { navigate } from '@/components/actions';
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker's CSS
 import Image from 'next/image';
+import DatePicker from "react-datepicker";
 
 /* Three features: being able to display all events (sorted or not),
                    search for a specific event by name,
@@ -32,7 +32,7 @@ function ViewAllEvents() {
         setLoading(true);
         try {
             // CONNECT TO BACK
-            const response = await api.get(`/api/get_event/${sortOrder}`);
+            const response = await api.get(`/api/event/get_event/${sortOrder}`);
             if (response.status === 200) {
                  setEvents(response.data);
              } else { setError('Failed to fetch events');}
@@ -49,7 +49,7 @@ function ViewAllEvents() {
         setLoading(true);
         try {
             // CONNECT TO BACK
-            const response = await api.get(`/api/get_event_name/${searchName}`);
+            const response = await api.get(`/api/event/get_event_name/${searchName}`);
             if (response.status === 200) {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
@@ -70,7 +70,7 @@ function ViewAllEvents() {
         setLoading(true);
         try {
             // CONNECT TO BACK
-            const response = await api.get(`/api/filter_event_date/${startDate.toISOString()}/${endDate.toISOString()}`);
+            const response = await api.get(`/api/event/filter_event_date/${startDate.toISOString()}/${endDate.toISOString()}`);
             if (response.status === 200) {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
@@ -156,7 +156,27 @@ function ViewAllEvents() {
                             Apply Date Filter
                         </button>
                     </div>
-
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Events</h2>
+                        {loading ? (
+                            <p className="text-center">Loading...</p>
+                        ) : error ? (
+                            <p className="text-center text-red-500">{error}</p>
+                        ) : events.length === 0 ? (
+                            <p className="text-center text-gray-600">There does not seem to be any events that match the
+                                criteria.</p>
+                        ) : (
+                            <ul className="space-y-4">
+                                {events.map((event) => (
+                                    <li key={event.id} className="bg-orange-100 p-4 rounded-md shadow">
+                                        <h3 className="text-xl font-semibold">{event.name}</h3>
+                                        <p className="text-gray-600">Date: {new Date(event.date).toLocaleDateString()}</p>
+                                        <p className="mt-2">{event.description}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </main>
         </div>
