@@ -37,7 +37,7 @@ function ViewAllEvents() {
                  setEvents(response.data);
              } else { setError('Failed to fetch events');}
         } catch (err) {
-            setError('There was an error fetching evnts: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -54,7 +54,7 @@ function ViewAllEvents() {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
         } catch (err) {
-            setError('Error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -73,7 +73,7 @@ function ViewAllEvents() {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
         } catch (err) {
-            setError('Error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
