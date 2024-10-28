@@ -18,6 +18,8 @@ function ViewAllEvents() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchName, setSearchName] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     // 1
     // Fetch events when the sort order changes
@@ -59,6 +61,10 @@ function ViewAllEvents() {
     };
 
     const filterEventsByDate = async () => {
+        if (!startDate || !endDate) {
+            alert('Please select a start and end date');
+            return;
+        }
         setLoading(true);
         try {
             // CONNECT TO BACK
