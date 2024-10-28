@@ -89,10 +89,47 @@ function ViewAllEvents() {
                     width={200}
                     height={200}
                     priority
-                    >
+                >
                 </Image>
+                <h1 className="text-5xl font-bold text-center">View All Events</h1>
+
+                <div>
+                    <h2 className="text-2xl font-semibold mb-4">Sort Events</h2>
+                    <select
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(Number(e.target.value))}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    >
+                        <option value={0}>Random</option>
+                        <option value={1}>Ascending Date</option>
+                        <option value={2}>Descending Date</option>
+                    </select>
+                </div>
+
+                <div className="w-full max-w-4xl space-y-8">
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Search by Name</h2>
+                        <div className="flex">
+                            <input
+                                type="text"
+                                value={searchName}
+                                onChange={(e) => setSearchName(e.target.value)}
+                                placeholder="Enter event name"
+                                className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                            <button
+                                onClick={searchEventByName}
+                                className="px-4 py-2 bg-orange-100 text-black font-bold rounded-r-md hover:bg-orange-900 hover:text-white transition duration-300"
+                            >
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </main>
         </div>
-    );
+);
 }
+
 export default ViewAllEvents;
