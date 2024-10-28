@@ -1,6 +1,6 @@
 'use client'
 
-//import api from '../../api.js';
+import api from '../../api.js';
 import { useState, useEffect } from 'react';
 import { navigate } from '@/components/actions';
 import DatePicker from 'react-datepicker';
@@ -37,7 +37,7 @@ function ViewAllEvents() {
                  setEvents(response.data);
              } else { setError('Failed to fetch events');}
         } catch (err) {
-            setError('There was an error fetching evnts: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -54,12 +54,14 @@ function ViewAllEvents() {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
         } catch (err) {
-            setError('Error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
 
+    // 3
+    // allows user to select a start and end date range to display events in that range
     const filterEventsByDate = async () => {
         if (!startDate || !endDate) {
             alert('Please select a start and end date');
@@ -73,11 +75,24 @@ function ViewAllEvents() {
                  setEvents(response.data);
             } else { setError('Failed to fetch events'); }
         } catch (err) {
-            setError('Error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
-
+    return (
+        <div className="min-h-screen flex flex-col bg-white text-black">
+            <main className="flex-grow flex flex-col items-center justify-start p-4 space-y-8 overflow-y-auto">
+                <Image
+                    src="/images/house.png"
+                    alt="Logo"
+                    width={200}
+                    height={200}
+                    priority
+                    >
+                </Image>
+            </main>
+        </div>
+    );
 }
 export default ViewAllEvents;
