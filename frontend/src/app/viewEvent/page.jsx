@@ -126,10 +126,41 @@ function ViewAllEvents() {
                         </div>
                     </div>
 
+                    <div>
+                        <h2 className="text-2xl font-semibold mb-4">Filter by Date Range</h2>
+                        <div className="flex space-x-4 mb-4">
+                            <DatePicker
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                selectsStart
+                                startDate={startDate}
+                                endDate={endDate}
+                                placeholderText="Start Date"
+                                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                            <DatePicker
+                                selected={endDate}
+                                onChange={date => setEndDate(date)}
+                                selectsEnd
+                                startDate={startDate}
+                                endDate={endDate}
+                                minDate={startDate}
+                                placeholderText="End Date"
+                                className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                        </div>
+                        <button
+                            onClick={filterEventsByDate}
+                            className="w-full px-4 py-2 bg-orange-100 text-black font-bold rounded-md hover:bg-orange-900 hover:text-white transition duration-300"
+                        >
+                            Apply Date Filter
+                        </button>
+                    </div>
+
                 </div>
             </main>
         </div>
-);
+    );
 }
 
 export default ViewAllEvents;
