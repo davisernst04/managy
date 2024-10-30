@@ -53,3 +53,9 @@ class AmenityTest(TestCase):
         self.amenity.delete()
         with self.assertRaises(Amenity.DoesNotExist):
             Amenity.objects.get(id=amenity_id)
+
+
+
+class EventTest(TestCase):
+
+

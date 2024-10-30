@@ -2,11 +2,13 @@ from rest_framework import serializers
 from .models import Person, Worker, Member, Admin
 
 class PersonSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     class Meta:
         model = Person
-        fields = ["username", "password", "first_name", "last_name", "email", "role", "dob", "telephone"]
+        fields = ["username", "password", "first_name", "last_name", "email", "dob", "telephone"]
         # No one can read the password
         extra_kwargs = {"password": {"write_only": True}}
+
 
     def create(self, validated_data):
         user = Person(**validated_data)
@@ -14,6 +16,8 @@ class PersonSerializer(serializers.ModelSerializer):
         user.save()
         return user
 class WorkerSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
         model = Worker
         fields = PersonSerializer.Meta.fields + ['address']
@@ -22,10 +26,13 @@ class WorkerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
             worker = Worker.create_worker(**validated_data)
             return worker
+
 class MemberSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
         model = Member
-        fields = PersonSerializer.Meta.fields + ['events']
+        fields = PersonSerializer.Meta.fields
 
     #Create member using the creator method in the model
     def create(self, validated_data):
@@ -33,9 +40,11 @@ class MemberSerializer(serializers.ModelSerializer):
             return member
 
 class AdminSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
         model = Admin
-        fields = PersonSerializer.Meta.fields
+        fields = PersonSerializer.Meta.fields + ['address', 'recreational_venue']
 
     #Create admin using the creator method in the model
     def create(self, validated_data):

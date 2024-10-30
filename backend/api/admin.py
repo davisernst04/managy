@@ -27,7 +27,7 @@ class PersonAdmin(admin.ModelAdmin):
         obj.save()
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = PersonAdmin.list_display + ('events',)
+    list_display = PersonAdmin.list_display
     search_fields = PersonAdmin.search_fields
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
