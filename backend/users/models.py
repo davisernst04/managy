@@ -1,9 +1,20 @@
-import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
+
+from api.models import RecreationalVenue
+
+import uuid
+import random
+import string
+
+
+def generate_random_string(length):
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    return random_string
 
 class PersonManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -11,7 +22,10 @@ class PersonManager(BaseUserManager):
             raise ValueError("The Email field must be set to a valid input")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        if password is None:
+            user.set_password(generate_random_string(16))
+        else:
+            user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -35,6 +49,7 @@ class Person(AbstractUser):
         ('worker','Worker'),
         ('admin','Admin')
     ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
@@ -42,6 +57,8 @@ class Person(AbstractUser):
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
+    recreational_venue = models.ForeignKey(RecreationalVenue, on_delete=models.CASCADE,
+                related_name="recreational_venue", null=False)
     objects = PersonManager()
 
     def getInfo(self):
@@ -117,8 +134,6 @@ class Worker(Person):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
 class Admin(Person):
-    address = models.TextField()
-    recreational_venue = models.TextField()
     @classmethod
     def create_admin(cls, email, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')

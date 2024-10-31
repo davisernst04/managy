@@ -5,6 +5,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import generics
 
+from rest_framework.response import Response
+from rest_framework import status
+
 class UserListView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -40,6 +43,14 @@ class CreateUserMemberView(generics.CreateAPIView):
 class CreateUserAdminView(generics.CreateAPIView):
     serializer_class = AdminSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = AdminSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def perform_create(self, serializer):
         admin = serializer.save() #This will use the create method from the serializer

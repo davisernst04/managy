@@ -17,4 +17,5 @@ urlpatterns = [
     path("event/get_event_name/<str:query>/", views.getEventName.as_view(), name="event-search"),
     path("event/get_event/<int:pk>/", views.sortingEvents.as_view(), name="event-sort"),
 
+
 ]

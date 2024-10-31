@@ -1,7 +1,13 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, Amenity, Events, BookingAmenity
+from .models import Note, Amenity, Events, BookingAmenity, RecreationalVenue
 from django.core.validators import MinValueValidator
+
+
+class RecreationalVenueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecreationalVenue
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password"]
         # No one can read the password
         extra_kwargs = {"password": {"write_only": True}}
+
     def create(self, validated_data):
         print(validated_data)
         user = User.objects.create_user(**validated_data)
@@ -27,8 +34,9 @@ class AmenitySerializer(serializers.ModelSerializer):
     #name = serializers.CharField(max_length=50)
     #description = serializers.CharField()
     #capacity = serializers.IntegerField(default=1, validators=[MinValueValidator(1)])
-    occupied = serializers.BooleanField(default=False,read_only=True)
+    occupied = serializers.BooleanField(default=False, read_only=True)
     member_user = serializers.CharField(read_only=True)
+
     #image = serializers.CharField()
     class Meta:
         model = Amenity
@@ -49,15 +57,19 @@ class AmenitySerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ["id", "eventName", "eventDescription", "eventLocation", "eventTime", "eventDate", "created_at", "author"]
+        fields = ["id", "eventName", "eventDescription", "eventLocation", "eventTime", "eventDate", "created_at",
+                  "author"]
         extra_kwargs = {"author": {"read_only": True}}
+
+
 class BookingAmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = BookingAmenity
-        fields = ['amenities', 'duration_booked', 'author','id']
+        fields = ['amenities', 'duration_booked', 'author', 'id']
         extra_kwargs = {"author": {"read_only": True}}
 
     def validate_amenities(self, value):
@@ -87,7 +99,8 @@ class BookingAmenitySerializer(serializers.ModelSerializer):
         #amenity.register(validated_data['author'])
         return booking_amenity
 
+
 class BookingAmenitySerializerView(serializers.ModelSerializer):
     class Meta:
         model = BookingAmenity
-        fields = ['amenity_name', 'duration_booked','amenity_details','amenity_capacity','amenity_id','id']
+        fields = ['amenity_name', 'duration_booked', 'amenity_details', 'amenity_capacity', 'amenity_id', 'id']
