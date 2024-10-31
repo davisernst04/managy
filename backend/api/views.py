@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Note, Amenity, Events, BookingAmenity, EventSelection
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from users.permissions import IsWorker, IsMember, IsAdmin
+from datetime import date
 from django.views.generic.edit import DeleteView
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -105,6 +106,19 @@ class EventList(generics.ListAPIView):
 
     def get_queryset(self):
         return Events.objects.all()
+
+class EventUpdate(generics.RetrieveUpdateAPIView):
+    serializer_class = EventSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated,IsWorker]
+
+    def get_queryset(self):
+        return Events.objects.all()
+    def perform_update(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
 
 class EventDelete(generics.RetrieveDestroyAPIView):
     serializer_class = EventSerializer
@@ -248,7 +262,9 @@ class EventSelectionRegister(generics.RetrieveUpdateAPIView):
         return context
 
     def get_queryset(self):
-        return EventSelection.objects.all()
+        #return EventSelection.objects.all()
+        return EventSelection.objects.filter(date__gte=date.today())
+
 
     def perform_update(self, serializer):
         eventSelect = serializer.save(member=self.request.user)

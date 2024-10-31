@@ -146,6 +146,7 @@ class EventSelectionSerializerUpdate(serializers.ModelSerializer):
         except Member.DoesNotExist:
             raise serializers.ValidationError("Member does not exist.")
         print("Test")
+
         if (self.context.get('action') == 'register'):
             if member and not(instance.isFull()):
                 instance.membersRegistered.add(member)

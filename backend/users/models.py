@@ -19,12 +19,12 @@ class PersonManager(BaseUserManager):
         extra_fields.setdefault('role', 'admin')
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError("Superuser needs is_staff=True.")
+            raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError("Superuser needs is_superuser=True.")
+            raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
 
-    def _delete_user(self, user):
+    def delete_user(self, user):
         user.delete()
 
 class Person(AbstractUser):
@@ -71,7 +71,6 @@ class Member(Person):
             ValueError("Error Amenity doesn't exist")
             return None
 
-
     def getEventList(self):
         from api.models import Event
         return Event.objects.all()
@@ -87,9 +86,6 @@ class Member(Person):
 
     #def cancelEvent(self,id):
     #def registerAmenity(self):
-
-
-
 
 class Worker(Person):
     address = models.TextField()
