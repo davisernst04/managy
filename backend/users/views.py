@@ -13,6 +13,17 @@ class UserListView(generics.ListAPIView):
     def get_queryset(self):
         return Person.objects.all()
 
+
+class UserSearchView(generics.ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdmin]
+    serializer_class = PersonSerializer
+
+    def get_queryset(self):
+        order=self.kwargs.get('pk','')
+
+        return Person.objects.all()
+
 class UserDeleteView(generics.DestroyAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -26,7 +37,7 @@ class CreateUserWorkerView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
-            worker = serializer.save() #This will use the create method from the serializer
+            worker = serializer.save()
             return worker
 
 class CreateUserMemberView(generics.CreateAPIView):
@@ -42,5 +53,5 @@ class CreateUserAdminView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
-        admin = serializer.save() #This will use the create method from the serializer
+        admin = serializer.save()
         return admin

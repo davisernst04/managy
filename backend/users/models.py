@@ -1,6 +1,4 @@
-import uuid
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
@@ -48,7 +46,7 @@ class Person(AbstractUser):
         return [str(self.user.id), str(self.name), str(self.last_name), str(self.email), str(self.dob), str(self.telephone), str(self.role)]
 
     def getId(self):
-        return self.user.id
+        return self.id
 
     #def updateInfo(self):
 
@@ -111,7 +109,7 @@ class Worker(Person):
             amenity=Amenity.objects.get(id=id)
             return amenity
         except self.models.DoesNotExist:
-            ValueError("Error Amenity doesn't exist")
+            ValueError("Amenity doesn't exist")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
@@ -124,8 +122,13 @@ class Admin(Person):
         extra_fields.setdefault('role', 'admin')
         return cls.objects.create_superuser(email, password, **extra_fields)
 
-    def create_person(name, last_name, email, role, password=None, **extra_fields):
-        Member.create_member(name,last_name,email,role,**extra_fields)
+    def create_person(self,name, last_name, email, role, password=None, **extra_fields):
+        if(role=='member'):
+            Member.create_member(name,last_name,email,**extra_fields)
+        elif(role=='worker'):
+            Worker.create_worker(name,last_name,email,**extra_fields)
+        elif(role=='admin')
+            self.create_admin(name,last_name,email,**extra_fields)
 
     def find_person(id=None, name=None, last_name=None, email=None):
         filters=Q()
@@ -145,7 +148,8 @@ class Admin(Person):
     def delete_person(self,user_id):
         try:
             user=Person.objects.get(id=user_id)
-            self._delete_user(user)
+            #self._delete_user(user)
+            user.delete()
         except self.models.DoesNotExist:
             raise ValueError("User Not found")
 
