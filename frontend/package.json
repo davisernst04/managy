@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.13.0",
     "axios": "^1.7.7",
     "jwt-decode": "^4.0.0",
     "next": "15.0.0",
