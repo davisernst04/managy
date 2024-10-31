@@ -1,13 +1,126 @@
 import uuid
-
+from users.models import Person, Member
 from django.db import models
-from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+from datetime import date
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="notes")
 
     def __str__(self):
         return self.title
+
+class Amenity(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    capacity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    occupied = models.BooleanField(default=False)
+    member_user = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="amenity")
+    image = models.TextField()
+
+    def getName(self):
+        return self.name
+
+    def isOccupied(self):
+        return self.occupied
+
+    def getCapacity(self):
+        return self.capacity
+
+    def getId(self):
+        return self.id
+
+    def getDescription(self):
+        return self.description
+
+    def canRegister(self):
+        return (self.member_user=="") and not(self.isOccupied())
+
+
+    #@property
+    #def register(self):
+    #    return self.member_user
+    #@register.setter
+
+
+    def register(self,member_us):
+        if(self.canRegister()):
+            self.occupied=True
+            self.member_user = str(member_us)
+            print("Success:"+str(member_us))
+        else:
+            print("Can't register for this amenity")
+
+    def release(self):
+        self.occupied=False
+        self.member_user = ""
+
+class Events(models.Model):
+    eventName = models.CharField(max_length=50)
+    eventDescription = models.TextField()
+    eventLocation = models.TextField()
+    eventTime = models.TimeField()
+    eventDate = models.DateField()
+    eventCapacity = models.IntegerField(validators=[MinValueValidator(1)])
+    membersRegistered = models.ManyToManyField('users.Member', related_name="event_members")
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event")
+
+    def __str__(self):
+        return self.name
+
+    def getEventDetails(self):
+        return  f"{self.eventName} {self.eventDescription} {self.eventLocation} {self.eventTime}"
+
+    def isEventToday(self):
+        return (date.today() == self.eventDate)
+
+class Booking(models.Model):
+    #booked_status = models.BooleanField(default=False)
+    #date = models.TextField()
+    #time_slot = models.TimeField(default=None)
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="Booking")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def isBooked(self):
+        return self.booked_status
+
+    class Meta:
+        abstract = True
+
+
+class BookingAmenity(Booking):
+    #amenity_object = models.ForeignKey(, blank=True, null=True, on_delete=models.CASCADE)
+    #amenity_object = models.ForeignKey('api.Amenity', blank=True, null=True, on_delete=models.CASCADE)
+    #amenity_object = models.TextField(choices=Amenity.objects.all.getName())
+    amenities = models.ForeignKey(Amenity, on_delete=models.CASCADE, related_name="booking_obj")
+    amenity_name = models.TextField()
+    duration_booked = models.IntegerField()
+    amenity_details = models.TextField()
+    amenity_capacity = models.IntegerField(default=0)
+    amenity_id = models.IntegerField(default=0)
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="booking_amenity")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class EventSelection(Booking):
+    name = models.TextField()
+    date = models.IntegerField()
+    description = models.TextField()
+    capacity = models.IntegerField(validators=[MinValueValidator(1)])
+    numRegistered = models.IntegerField()
+    membersRegistered = models.ManyToManyField('users.Member', related_name="event_selection_members")
+    created_at = models.DateTimeField(auto_now_add=True)
+    #author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event_selection")
+
+    def getMembers(self):
+        return self.membersRegistered
+    def isFull(self):
+        return (self.membersRegistered.members.count()) == (self.capacity)
