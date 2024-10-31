@@ -1,21 +1,26 @@
-import {error} from "next/dist/build/output/log";
+"use client";
+
+import { uploadToGCP } from "@/components/cloud_storage";
 
 function GCPtest(){
 
-    const { uploadToGCP } = require('@/components/cloud_storage');
-    const testupload = "@/test/testupload.txt";
+    const testupload = "test/testupload.txt";
 
     // Ahora puedes usar uploadToGCP en este archivo
-    uploadToGCP(`${testupload}`, 'admin_excel/', 'testfile.txt')
-        .then(link => console.log('Uploading file to:', link))
-        .catch(error => {
-            console.error('Error uploading file:', error);
-            alert(`Error uploading file: ${error.message}`);
-        });
+
+    const handleUpload = async () => {
+        uploadToGCP(`${testupload}`, 'admin_excel/', 'testfile.txt', 0)
+            .then(link => console.log('Uploading file to:', link))
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                alert(`Error uploading file: ${error.message}`);
+            });
+    }
 
     return(
         <div>
             <h1>GCP Test</h1>
+            <button onClick={handleUpload}>Upload to GCP</button>
         </div>
     );
 
