@@ -1,20 +1,17 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { isAuthorized } from "./ProtectedRoute.jsx";
-import { redirect } from "next/navigation";
 
 /*import { useRouter } from 'next/navigation'*/
-import {navigate} from "./actions.js";
+import { navigate } from "./actions.js";
 
 export const withAuth = (WrappedComponent) => {
-
   return function WithAuth(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuth, setIsAuth] = useState(false);
 
     useEffect(() => {
-
       const checkAuth = async () => {
         const authorized = await isAuthorized();
         if (!authorized) {
