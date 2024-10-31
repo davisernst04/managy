@@ -127,8 +127,10 @@ class Admin(Person):
             Member.create_member(name,last_name,email,**extra_fields)
         elif(role=='worker'):
             Worker.create_worker(name,last_name,email,**extra_fields)
-        elif(role=='admin')
+        elif(role=='admin'):
             self.create_admin(name,last_name,email,**extra_fields)
+        else:
+            pass
 
     def find_person(id=None, name=None, last_name=None, email=None):
         filters=Q()
