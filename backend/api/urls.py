@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from users import views as userViews
 
 urlpatterns = [
     path("notes/", views.NoteListCreate.as_view(), name="note-list"),
@@ -13,7 +14,6 @@ urlpatterns = [
     path("amenity/booking/create/", views.createBooking.as_view(), name="amenity-book"),
     path("amenity/booking/view/", views.getBooking.as_view(), name="amenity-book-list"),
     path("amenity/booking/cancel/<int:pk>/",views.cancelBooking.as_view(), name="amenity-cancel"),
-
     path("recreational_venue/create/", views.RecreationalVenueView.as_view(), name="recreational-create"),
 
     path("event/create/", views.EventCreate.as_view(), name="create-event"),
@@ -28,6 +28,10 @@ urlpatterns = [
     path("event/selection/create/", views.EventSelectionCreate.as_view(), name="event-selection"),
     path("event/selection/view/", views.EventSelectionView.as_view(), name="event-selection-view"),
     path("event/selection/register/<int:pk>/", views.EventSelectionRegister.as_view(), name="event-register"),
-    path("event/selection/register/cancel/<int:pk>/", views.EventSelectionCancel.as_view(), name="event-cancel")
+    path("event/selection/register/cancel/<int:pk>/", views.EventSelectionCancel.as_view(), name="event-cancel"),
+
+    path("admin/createuser/", userViews.CreateUserView.as_view(), name="create-user"),
+    path("admin/deleteuser/<int:pk>/", userViews.UserDeleteView.as_view(), name="user-delete"),
+    path("admin/search/<str:name>/<str:email>/<int:id>/<str:role>/", userViews.UserSearchViewMultiple.as_view(), name="user-search"),
 
 ]
