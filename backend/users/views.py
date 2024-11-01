@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import generics
 
+from api.models import RecreationalVenue
+
 class UserListView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -53,8 +55,7 @@ class CreateUserAdminView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         recreational_id = self.request.data.get('recreational_venue_id')
-        from api.models import RecreationalVenue
-        recreational_venue=RecreationalVenue.objects.get(id=recreational_id)
+        recreational_venue = RecreationalVenue.objects.get(id=recreational_id)
         admin = serializer.save()
         admin.recreational_venue.add(recreational_venue)
         return admin
