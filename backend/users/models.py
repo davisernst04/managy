@@ -110,9 +110,26 @@ class Worker(Person):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
+class RecreationalVenue(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    photo = models.CharField(max_length=256)
+
+    def get_info(self):
+        mydict = {
+            "name": self.name,
+            "address": self.address,
+            "photo": self.photo
+        }
+        return mydict
+
+    def __str__(self):
+        mystr = "Recreational Venue: " + self.name + "\n\tAddress: " + self.address
+        return mystr
+
 class Admin(Person):
     address = models.TextField()
-    recreational_venue = models.ManyToManyField('api.RecreationalVenue',related_name="recreational_venue")
+    recreational_venue = models.ManyToManyField(RecreationalVenue,related_name="recreational_venue")
     @classmethod
     def create_admin(cls, email, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')

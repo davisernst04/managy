@@ -1,7 +1,10 @@
 #from django.shortcuts import render
 #from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, AmenitySerializer, EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView, EventSelectionSerializer, EventSelectionSerializerView, EventSelectionSerializerUpdate, RecreationalVenueSerializer
+from .serializers import UserSerializer, NoteSerializer
+from .serializers import AmenitySerializer, EventSerializer, BookingAmenitySerializer
+from .serializers import BookingAmenitySerializerView, EventSelectionSerializer
+from .serializers import EventSelectionSerializerView, EventSelectionSerializerUpdate
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Note, Amenity, Events, BookingAmenity, EventSelection
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -288,13 +291,4 @@ class EventSelectionCancel(generics.RetrieveUpdateAPIView):
         eventSelect = serializer.save(member=self.request.user)
         return eventSelect
 
-class RecreationalVenueView(generics.CreateAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = RecreationalVenueSerializer
 
-    def post(self, request, *args, **kwargs):
-        serializer = RecreationalVenueSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

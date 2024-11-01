@@ -1,9 +1,26 @@
-from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
-from .models import Person, Worker, Member, Admin
+from .serializers import PersonSerializer, WorkerSerializer
+from .serializers import MemberSerializer, AdminSerializer
+from .serializers import RecreationalVenueSerializer
+from .models import Person, Worker, Member, Admin, RecreationalVenue
 from .permissions import IsMember, IsAdmin, IsWorker
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import generics
+
+from rest_framework.response import Response
+from rest_framework import status
+
+
+class RecreationalVenueView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RecreationalVenueSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = RecreationalVenueSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserListView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -53,8 +70,7 @@ class CreateUserAdminView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         recreational_id = self.request.data.get('recreational_venue_id')
-        from api.models import RecreationalVenue
-        recreational_venue=RecreationalVenue.objects.get(id=recreational_id)
+        recreational_venue = RecreationalVenue.objects.get(id=recreational_id)
         admin = serializer.save()
         admin.recreational_venue.add(recreational_venue)
         return admin

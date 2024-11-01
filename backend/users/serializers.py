@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Person, Worker, Member, Admin
+from .models import Person, Worker, Member, Admin, RecreationalVenue
+
+class RecreationalVenueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecreationalVenue
+        fields = '__all__'
 
 class PersonSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})

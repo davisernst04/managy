@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, Amenity, Events, BookingAmenity, EventSelection, RecreationalVenue
+from .models import Note, Amenity, Events, BookingAmenity, EventSelection
 from users.models import Member
 
 class UserSerializer(serializers.ModelSerializer):
@@ -164,8 +164,3 @@ class EventSelectionSerializerView(serializers.ModelSerializer):
         model = EventSelection
         fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id', 'author']
 
-
-class RecreationalVenueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecreationalVenue
-        fields = '__all__'
