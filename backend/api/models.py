@@ -134,3 +134,20 @@ class EventSelection(Booking):
         return self.membersRegistered
     def isFull(self):
         return (self.membersRegistered.count()) == (self.capacity)
+
+class RecreationalVenue(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    photo = models.CharField(max_length=256)
+
+    def get_info(self):
+        mydict = {
+            "name": self.name,
+            "address": self.address,
+            "photo": self.photo
+        }
+        return mydict
+
+    def __str__(self):
+        mystr = "Recreational Venue: " + self.name + "\n\tAddress: " + self.address
+        return mystr

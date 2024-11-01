@@ -14,6 +14,8 @@ urlpatterns = [
     path("amenity/booking/view/", views.getBooking.as_view(), name="amenity-book-list"),
     path("amenity/booking/cancel/<int:pk>/",views.cancelBooking.as_view(), name="amenity-cancel"),
 
+    path("recreational_venue/create/", views.RecreationalVenueView.as_view(), name="recreational-create"),
+
     path("event/create/", views.EventCreate.as_view(), name="create-event"),
     path("event/view/", views.EventList.as_view(), name="view-event"),
     path("event/update/<int:pk>/", views.EventUpdate.as_view(), name="update-event"),
