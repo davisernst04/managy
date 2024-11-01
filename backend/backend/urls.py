@@ -18,5 +18,4 @@ urlpatterns = [
     path("users/register/member/", userView.CreateUserMemberView.as_view(), name="register-member"),
     path("users/register/admin/", userView.CreateUserAdminView.as_view(), name="register-member"),
 
-    path("users/", include("users.urls")),
 ]
