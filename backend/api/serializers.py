@@ -1,13 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, Amenity, Events, BookingAmenity, RecreationalVenue
+from .models import Note, Amenity, Events, BookingAmenity
 from django.core.validators import MinValueValidator
-
-
-class RecreationalVenueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecreationalVenue
-        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -4,8 +4,6 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
 
-from api.models import RecreationalVenue
-
 import uuid
 import random
 import string
@@ -15,6 +13,23 @@ def generate_random_string(length):
     characters = string.ascii_letters + string.digits
     random_string = ''.join(random.choice(characters) for _ in range(length))
     return random_string
+
+class RecreationalVenue(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    photo = models.CharField(max_length=256)
+
+    def get_info(self):
+        mydict = {
+            "name": self.name,
+            "address": self.address,
+            "photo": self.photo
+        }
+        return mydict
+
+    def __str__(self):
+        mystr = "Recreational Venue: "+self.name + "\n\tAddress: "+self.address
+        return mystr
 
 class PersonManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -57,8 +72,7 @@ class Person(AbstractUser):
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
-    recreational_venue = models.ForeignKey(RecreationalVenue, on_delete=models.CASCADE,
-                related_name="recreational_venue", null=False)
+    recreational_venue = models.ManyToManyField(RecreationalVenue, related_name='recreational_venue')
     objects = PersonManager()
 
     def getInfo(self):

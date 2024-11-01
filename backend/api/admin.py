@@ -35,7 +35,7 @@ class WorkerAdmin(admin.ModelAdmin):
     search_fields = PersonAdmin.search_fields
 @admin.register(Admin)
 class AdminAdmin(admin.ModelAdmin):
-    list_display = PersonAdmin.list_display + ('address',)
+    list_display = PersonAdmin.list_display
     search_fields = PersonAdmin.search_fields
 
 admin.site.register(Person, PersonAdmin)
