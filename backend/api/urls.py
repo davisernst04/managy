@@ -30,5 +30,4 @@ urlpatterns = [
     path("event/selection/register/<int:pk>/", views.EventSelectionRegister.as_view(), name="event-register"),
     path("event/selection/register/cancel/<int:pk>/", views.EventSelectionCancel.as_view(), name="event-cancel")
 
-
 ]
