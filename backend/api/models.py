@@ -53,12 +53,9 @@ class Amenity(models.Model):
             print("Can't register for this amenity")
 
     def release(self):
-        print(f"Releasing amenity: {self.id}, Current occupied: {self.occupied}, Member: {self.member_user}")
         self.occupied=False
         self.member_user = ""
         self.save()
-        print(f"Amenity after release: {self.occupied}, Member: {self.member_user}")
-
 class Events(models.Model):
     eventName = models.CharField(max_length=50)
     eventDescription = models.TextField()
@@ -66,7 +63,6 @@ class Events(models.Model):
     eventTime = models.TimeField()
     eventDate = models.DateField()
     eventCapacity = models.IntegerField(validators=[MinValueValidator(1)])
-    #membersRegistered = models.ManyToManyField('users.Member', related_name="event_members")
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event")
 
@@ -113,9 +109,6 @@ class Booking(models.Model):
         abstract = True
 
 class BookingAmenity(Booking):
-    #amenity_object = models.ForeignKey(, blank=True, null=True, on_delete=models.CASCADE)
-    #amenity_object = models.ForeignKey('api.Amenity', blank=True, null=True, on_delete=models.CASCADE)
-    #amenity_object = models.TextField(choices=Amenity.objects.all.getName())
     amenities = models.ForeignKey(Amenity, on_delete=models.CASCADE, related_name="booking_obj")
     amenity_name = models.TextField()
     duration_booked = models.IntegerField()
@@ -141,3 +134,20 @@ class EventSelection(Booking):
         return self.membersRegistered
     def isFull(self):
         return (self.membersRegistered.count()) == (self.capacity)
+
+class RecreationalVenue(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    photo = models.CharField(max_length=256)
+
+    def get_info(self):
+        mydict = {
+            "name": self.name,
+            "address": self.address,
+            "photo": self.photo
+        }
+        return mydict
+
+    def __str__(self):
+        mystr = "Recreational Venue: " + self.name + "\n\tAddress: " + self.address
+        return mystr

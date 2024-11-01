@@ -1,13 +1,15 @@
 #from django.shortcuts import render
 #from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, AmenitySerializer, EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView, EventSelectionSerializer, EventSelectionSerializerView, EventSelectionSerializerUpdate
+from .serializers import UserSerializer, NoteSerializer, AmenitySerializer, EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView, EventSelectionSerializer, EventSelectionSerializerView, EventSelectionSerializerUpdate, RecreationalVenueSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Note, Amenity, Events, BookingAmenity, EventSelection
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from users.permissions import IsWorker, IsMember, IsAdmin
 from datetime import date
 from django.views.generic.edit import DeleteView
+from rest_framework.response import Response
+from rest_framework import status
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
@@ -224,7 +226,6 @@ class cancelBooking(generics.RetrieveDestroyAPIView):
         return BookingAmenity.objects.filter(author=user)
 
     def perform_destroy(self, instance):
-        #instance.amenities.release()
         self.get_serializer().delete(instance)
 
 class EventSelectionCreate(generics.CreateAPIView):
@@ -286,3 +287,14 @@ class EventSelectionCancel(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         eventSelect = serializer.save(member=self.request.user)
         return eventSelect
+
+class RecreationalVenueView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RecreationalVenueSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = RecreationalVenueSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

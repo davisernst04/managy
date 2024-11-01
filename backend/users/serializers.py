@@ -9,7 +9,6 @@ class PersonSerializer(serializers.ModelSerializer):
         # No one can read the password
         extra_kwargs = {"password": {"write_only": True}}
 
-
     def create(self, validated_data):
         user = Person(**validated_data)
         user.set_password(validated_data['password'])
@@ -41,12 +40,13 @@ class MemberSerializer(serializers.ModelSerializer):
 
 class AdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
-
+    recreational_venue_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Admin
-        fields = PersonSerializer.Meta.fields + ['address', 'recreational_venue']
+        fields = PersonSerializer.Meta.fields + ['address', 'recreational_venue','recreational_venue_id']
+        extra_kwargs = {"recreational_venue": {"read_only": True}}
 
-    #Create admin using the creator method in the model
     def create(self, validated_data):
+        recreational_venue_id = validated_data.pop('recreational_venue_id')
         admin = Admin.create_admin(**validated_data)
         return admin

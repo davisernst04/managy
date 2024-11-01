@@ -112,7 +112,7 @@ class Worker(Person):
 
 class Admin(Person):
     address = models.TextField()
-    recreational_venue = models.TextField()
+    recreational_venue = models.ManyToManyField('api.RecreationalVenue',related_name="recreational_venue")
     @classmethod
     def create_admin(cls, email, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')

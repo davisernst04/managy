@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note, Amenity, Events, BookingAmenity, EventSelection
+from .models import Note, Amenity, Events, BookingAmenity, EventSelection, RecreationalVenue
 from users.models import Member
 
 class UserSerializer(serializers.ModelSerializer):
@@ -121,12 +121,13 @@ class EventSelectionSerializer(serializers.ModelSerializer):
         eventSelection.save()
         return eventSelection
 
+
+
 class EventSelectionSerializerUpdate(serializers.ModelSerializer):
     class Meta:
         model = EventSelection
         fields = ['numRegistered', 'membersRegistered']
         extra_kwargs = {"numRegistered": {"read_only": True}, "membersRegistered":{"read_only": True}}
-
 
     def validate(self, value):
         member = self.context['request'].user
@@ -162,3 +163,9 @@ class EventSelectionSerializerView(serializers.ModelSerializer):
     class Meta:
         model = EventSelection
         fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id', 'author']
+
+
+class RecreationalVenueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecreationalVenue
+        fields = '__all__'
