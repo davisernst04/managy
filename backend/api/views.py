@@ -1,12 +1,15 @@
 #from django.shortcuts import render
 #from django.contrib.auth.models import User
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer, AmenitySerializer, EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView
+from .serializers import UserSerializer, NoteSerializer, AmenitySerializer, EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView, EventSelectionSerializer, EventSelectionSerializerView, EventSelectionSerializerUpdate, RecreationalVenueSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Note, Amenity, Events, BookingAmenity
+from .models import Note, Amenity, Events, BookingAmenity, EventSelection
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from users.permissions import IsWorker, IsMember, IsAdmin
+from datetime import date
 from django.views.generic.edit import DeleteView
+from rest_framework.response import Response
+from rest_framework import status
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
@@ -48,6 +51,22 @@ class AmenityCreate(generics.CreateAPIView):
         else:
             print(serializer.errors)
 
+class AmenityUpdate(generics.RetrieveUpdateAPIView):
+    serializer_class = AmenitySerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsWorker]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Amenity.objects.filter(author=user)
+
+    def perform_update(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+
 class AmenityList(generics.ListAPIView):
     serializer_class = AmenitySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -59,14 +78,15 @@ class AmenityList(generics.ListAPIView):
         #return Amenity.objects.filter(author=user)
 
 
-class AmenityDelete(generics.DestroyAPIView):
+class AmenityDelete(generics.RetrieveDestroyAPIView):
     serializer_class = AmenitySerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
     queryset = Amenity.objects.all()
 
+    def get_queryset(self):
+        return Amenity.objects.all()
     def perform_destroy(self, instance):
-        # You can add any additional logic here before deletion
         instance.delete()
 
 # Events
@@ -89,12 +109,27 @@ class EventList(generics.ListAPIView):
     def get_queryset(self):
         return Events.objects.all()
 
-class EventDelete(generics.DestroyAPIView):
+class EventUpdate(generics.RetrieveUpdateAPIView):
+    serializer_class = EventSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated,IsWorker]
+
+    def get_queryset(self):
+        return Events.objects.all()
+    def perform_update(self, serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+class EventDelete(generics.RetrieveDestroyAPIView):
     serializer_class = EventSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
-    #Event Delete
+    def get_queryset(self):
+        return Events.objects.all()
+
     def perform_destroy(self, instance):
         instance.delete()
 
@@ -125,7 +160,15 @@ class sortingEvents(generics.ListAPIView):
 
         return result
 
+class searchEvents(generics.ListAPIView):
+    serializer_class = EventSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        start=self.kwargs.get('start','')
+        end=self.kwargs.get('end','')
+        return Events.objects.filter(eventDate__range=[start,end])
 
 class sortingAmeneties(generics.ListAPIView):
     serializer_class = AmenitySerializer
@@ -150,8 +193,12 @@ class createBooking(generics.CreateAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
+    def get_serializer_context(self):
+        context=super().get_serializer_context()
+        context['action'] = 'register'
+        return context
+
     def perform_create(self, serializer):
-        print("Test")
         book = serializer.save(author=self.request.user)
         return book
 
@@ -170,11 +217,84 @@ class cancelBooking(generics.RetrieveDestroyAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
+    def get_serializer_context(self):
+        context=super().get_serializer_context()
+        context['action'] = 'cancel'
+        return context
     def get_queryset(self):
         user = self.request.user
         return BookingAmenity.objects.filter(author=user)
 
     def perform_destroy(self, instance):
-        # You can add any additional logic here before deletion
-        instance.amenities.release()
-        instance.delete()
+        self.get_serializer().delete(instance)
+
+class EventSelectionCreate(generics.CreateAPIView):
+    serializer_class = EventSelectionSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsWorker]
+
+    def perform_create(self, serializer):
+        eventSelect = serializer.save(author=self.request.user)
+        return eventSelect
+
+class EventSelectionView(generics.ListAPIView):
+    serializer_class = EventSelectionSerializerView
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        #if(user.role=='member'):
+        #    return EventSelection.objects.filter(author=user)
+        #elif(user.role=='worker'):
+        #    return EventSelection.objects.all()
+        #else:
+        #    return EventSelection.objects.none()
+        return EventSelection.objects.all()
+
+class EventSelectionRegister(generics.RetrieveUpdateAPIView):
+    serializer_class = EventSelectionSerializerUpdate
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsMember]
+
+    def get_serializer_context(self):
+        context=super().get_serializer_context()
+        context['action'] = 'register'
+        return context
+
+    def get_queryset(self):
+        #return EventSelection.objects.all()
+        return EventSelection.objects.filter(date__gte=date.today())
+
+
+    def perform_update(self, serializer):
+        eventSelect = serializer.save(member=self.request.user)
+        return eventSelect
+
+class EventSelectionCancel(generics.RetrieveUpdateAPIView):
+    serializer_class = EventSelectionSerializerUpdate
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsMember]
+
+    def get_serializer_context(self):
+        context=super().get_serializer_context()
+        context['action'] = 'cancel'
+        return context
+
+    def get_queryset(self):
+        return EventSelection.objects.all()
+
+    def perform_update(self, serializer):
+        eventSelect = serializer.save(member=self.request.user)
+        return eventSelect
+
+class RecreationalVenueView(generics.CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RecreationalVenueSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = RecreationalVenueSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,35 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
-
-import uuid
-import random
-import string
-
-
-def generate_random_string(length):
-    characters = string.ascii_letters + string.digits
-    random_string = ''.join(random.choice(characters) for _ in range(length))
-    return random_string
-
-class RecreationalVenue(models.Model):
-    name = models.CharField(max_length=50)
-    address = models.CharField(max_length=50)
-    photo = models.CharField(max_length=256)
-
-    def get_info(self):
-        mydict = {
-            "name": self.name,
-            "address": self.address,
-            "photo": self.photo
-        }
-        return mydict
-
-    def __str__(self):
-        mystr = "Recreational Venue: "+self.name + "\n\tAddress: "+self.address
-        return mystr
 
 class PersonManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -37,10 +9,7 @@ class PersonManager(BaseUserManager):
             raise ValueError("The Email field must be set to a valid input")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        if password is None:
-            user.set_password(generate_random_string(16))
-        else:
-            user.set_password(password)
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -50,12 +19,12 @@ class PersonManager(BaseUserManager):
         extra_fields.setdefault('role', 'admin')
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError("Superuser needs is_staff=True.")
+            raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError("Superuser needs is_superuser=True.")
+            raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
 
-    def _delete_user(self, user):
+    def delete_user(self, user):
         user.delete()
 
 class Person(AbstractUser):
@@ -64,7 +33,6 @@ class Person(AbstractUser):
         ('worker','Worker'),
         ('admin','Admin')
     ]
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
@@ -72,14 +40,13 @@ class Person(AbstractUser):
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
-    recreational_venue = models.ManyToManyField(RecreationalVenue, related_name='recreational_venue')
     objects = PersonManager()
 
     def getInfo(self):
         return [str(self.user.id), str(self.name), str(self.last_name), str(self.email), str(self.dob), str(self.telephone), str(self.role)]
 
     def getId(self):
-        return self.user.id
+        return self.id
 
     #def updateInfo(self):
 
@@ -104,7 +71,6 @@ class Member(Person):
             ValueError("Error Amenity doesn't exist")
             return None
 
-
     def getEventList(self):
         from api.models import Event
         return Event.objects.all()
@@ -120,9 +86,6 @@ class Member(Person):
 
     #def cancelEvent(self,id):
     #def registerAmenity(self):
-
-
-
 
 class Worker(Person):
     address = models.TextField()
@@ -142,19 +105,28 @@ class Worker(Person):
             amenity=Amenity.objects.get(id=id)
             return amenity
         except self.models.DoesNotExist:
-            ValueError("Error Amenity doesn't exist")
+            ValueError("Amenity doesn't exist")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
 class Admin(Person):
+    address = models.TextField()
+    recreational_venue = models.ManyToManyField('api.RecreationalVenue',related_name="recreational_venue")
     @classmethod
     def create_admin(cls, email, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')
         return cls.objects.create_superuser(email, password, **extra_fields)
 
-    def create_person(name, last_name, email, role, password=None, **extra_fields):
-        Member.create_member(name,last_name,email,role,**extra_fields)
+    def create_person(self,name, last_name, email, role, password=None, **extra_fields):
+        if(role=='member'):
+            Member.create_member(name,last_name,email,**extra_fields)
+        elif(role=='worker'):
+            Worker.create_worker(name,last_name,email,**extra_fields)
+        elif(role=='admin'):
+            self.create_admin(name,last_name,email,**extra_fields)
+        else:
+            pass
 
     def find_person(id=None, name=None, last_name=None, email=None):
         filters=Q()
@@ -174,7 +146,8 @@ class Admin(Person):
     def delete_person(self,user_id):
         try:
             user=Person.objects.get(id=user_id)
-            self._delete_user(user)
+            #self._delete_user(user)
+            user.delete()
         except self.models.DoesNotExist:
             raise ValueError("User Not found")
 

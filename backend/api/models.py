@@ -23,6 +23,9 @@ class Amenity(models.Model):
     author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="amenity")
     image = models.TextField()
 
+    def __str__(self):
+        return self.name
+
     def getName(self):
         return self.name
 
@@ -41,13 +44,6 @@ class Amenity(models.Model):
     def canRegister(self):
         return (self.member_user=="") and not(self.isOccupied())
 
-
-    #@property
-    #def register(self):
-    #    return self.member_user
-    #@register.setter
-
-
     def register(self,member_us):
         if(self.canRegister()):
             self.occupied=True
@@ -59,7 +55,7 @@ class Amenity(models.Model):
     def release(self):
         self.occupied=False
         self.member_user = ""
-
+        self.save()
 class Events(models.Model):
     eventName = models.CharField(max_length=50)
     eventDescription = models.TextField()
@@ -67,13 +63,29 @@ class Events(models.Model):
     eventTime = models.TimeField()
     eventDate = models.DateField()
     eventCapacity = models.IntegerField(validators=[MinValueValidator(1)])
-    membersRegistered = models.ManyToManyField('users.Member', related_name="event_members")
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event")
 
     def __str__(self):
-        return self.name
+        return self.eventName
 
+    def getName(self):
+        return self.eventName
+
+    def getDescription(self):
+        return self.eventDescription
+
+    def getDate(self):
+        return self.eventDate
+
+    def getCapacity(self):
+        return self.eventCapacity
+
+    def getTime(self):
+        return self.eventTime
+
+    def getId(self):
+        return self.id
     def getEventDetails(self):
         return  f"{self.eventName} {self.eventDescription} {self.eventLocation} {self.eventTime}"
 
@@ -82,8 +94,8 @@ class Events(models.Model):
 
 class Booking(models.Model):
     #booked_status = models.BooleanField(default=False)
-    #date = models.TextField()
-    #time_slot = models.TimeField(default=None)
+    #date = models.TextField(default=None)
+    #time_slot = models.TextField(default=None)
     author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="Booking")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -96,11 +108,7 @@ class Booking(models.Model):
     class Meta:
         abstract = True
 
-
 class BookingAmenity(Booking):
-    #amenity_object = models.ForeignKey(, blank=True, null=True, on_delete=models.CASCADE)
-    #amenity_object = models.ForeignKey('api.Amenity', blank=True, null=True, on_delete=models.CASCADE)
-    #amenity_object = models.TextField(choices=Amenity.objects.all.getName())
     amenities = models.ForeignKey(Amenity, on_delete=models.CASCADE, related_name="booking_obj")
     amenity_name = models.TextField()
     duration_booked = models.IntegerField()
@@ -112,15 +120,34 @@ class BookingAmenity(Booking):
 
 class EventSelection(Booking):
     name = models.TextField()
-    date = models.IntegerField()
+    date = models.DateField()
+    time = models.TimeField()
     description = models.TextField()
     capacity = models.IntegerField(validators=[MinValueValidator(1)])
+    eventRef = models.ForeignKey(Events, on_delete=models.CASCADE, related_name="eventsRef")
     numRegistered = models.IntegerField()
     membersRegistered = models.ManyToManyField('users.Member', related_name="event_selection_members")
     created_at = models.DateTimeField(auto_now_add=True)
-    #author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event_selection")
+    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event_selection")
 
     def getMembers(self):
         return self.membersRegistered
     def isFull(self):
-        return (self.membersRegistered.members.count()) == (self.capacity)
+        return (self.membersRegistered.count()) == (self.capacity)
+
+class RecreationalVenue(models.Model):
+    name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50)
+    photo = models.CharField(max_length=256)
+
+    def get_info(self):
+        mydict = {
+            "name": self.name,
+            "address": self.address,
+            "photo": self.photo
+        }
+        return mydict
+
+    def __str__(self):
+        mystr = "Recreational Venue: " + self.name + "\n\tAddress: " + self.address
+        return mystr
