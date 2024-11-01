@@ -119,25 +119,25 @@ class Admin(Person):
         extra_fields.setdefault('role', 'admin')
         return cls.objects.create_superuser(email, password, **extra_fields)
 
-    def create_person(self,name, last_name, email, role, password=None, **extra_fields):
+    def create_person(self,name, email, role, password=None, **extra_fields):
         if(role=='member'):
-            Member.create_member(name,last_name,email,**extra_fields)
+            Member.create_member(name,email,**extra_fields)
         elif(role=='worker'):
-            Worker.create_worker(name,last_name,email,**extra_fields)
+            Worker.create_worker(name,email,**extra_fields)
         elif(role=='admin'):
-            self.create_admin(name,last_name,email,**extra_fields)
+            self.create_admin(name,email,**extra_fields)
         else:
             pass
 
-    def find_person(id=None, name=None, last_name=None, email=None):
+    def find_person(id=None, name=None,role=None, email=None):
         filters=Q()
-        if id is not None:
+        if id is not None and id != 0:
             filters |= Q(id=id)
-        if name is not None:
-            filters |= Q(name__icontains=name)
-        if last_name is not None:
-            filters |= Q(lastn_name__icontains=last_name)
-        if email is not None:
+        if name is not None and name != "Null":
+            filters |= Q(first_name__icontains=name)
+        if role is not None and role != "Null":
+            filters |= Q(role__icontains=role)
+        if email is not None and email != "Null":
             filters |= Q(email__icontains=email)
         return Person.objects.filter(filters)
 
