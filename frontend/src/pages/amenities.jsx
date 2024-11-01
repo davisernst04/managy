@@ -4,7 +4,7 @@ import AmenityForm from '../components/ui/AmenityForm';
 import { fetchAmenities, createAmenity, deleteAmenity, updateAmenity } from "../api";
 
 
-const AmenitiesPage = () => {
+const Amenities = () => {
     const [amenities, setAmenities] = useState([]);
     const [error, setError] = useState(null);
     const [selectedAmenity, setSelectedAmenity] = useState(null);
@@ -67,15 +67,19 @@ const AmenitiesPage = () => {
             <AmenityForm onSubmit={handleFormSubmit} initialData={selectedAmenity} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 {amenities.map((amenity) => (
-                    <AmenityCard key={amenity.id} amenity={amenity} onDelete={() =>
-                        handleDelete(amenity.id)} onEdit={() => handleEdit(amenity)} />
+                    <AmenityCard
+                        key={amenity.id}
+                        amenity={amenity}
+                        onDelete={() => handleDelete(amenity.id)}
+                        onEdit={() => handleEdit(amenity)}
+                    />
                 ))}
             </div>
         </div>
     );
 };
 
-export default AmenitiesPage;
+export default Amenities;
 
 
 
