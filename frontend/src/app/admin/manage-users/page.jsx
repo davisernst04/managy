@@ -1,107 +1,207 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import api from "@/api";
+import AdminHeader from "@/components/AdminHeader";
+import { useState } from "react";
+import UserPanel from "@/components/UserPanel";
+import { withAuth } from "@/components/withAuth";
 
-const User = () => {
-  const [users, setUsers] = useState([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+const ManageUsers = () => {
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      first_name: "test",
+      last_name: "test",
+      email: "test@test.com",
+      role: "Member",
+    },
+  ]);
 
-  useEffect(() => {
-    getUsers();
-  }, []);
+  const [newUser, setNewUser] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "",
+  });
 
 
-  const getUsers = () => {
-    api
-      .get("/api/user/view/")
-      .then((res) => res.data)
-      .then((data) => {
-        setUsers(data);
-        console.log(data);
-      })
-      .catch((err) => alert(err));
+  // –– Mock methods to simulate API
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const openEditForm = (user) => {
+    setSelectedUser(user);
+    setShowEditForm(true);
   };
 
-  const createUser = (e) => {
-    e.preventDefault();
-    api
-      .post("/api/admin/createuser/", { firstName, lastName, email, role, })
-      .then((res) => {
-        if (res.status === 201) alert("User created");
-        else alert("Failed to create user");
-        getNotes();
-      })
-      .catch((err) => alert(err));
+  const closeEditForm = () => {
+    setSelectedUser(null);
+    setShowEditForm(false);
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  // ––Use methods below when implemtning API
+
+  //const getUser s= () => {
+  //  api
+  //    .get("/api/users/view/")
+  //    .then((res) => res.data)
+  //    .then((data) => {
+  //      setNotes(data);
+  //      console.log(data);
+  //    })
+  //    .catch((err) => alert(err));
+  //};
+
+  //const deleteUser = (id) => {
+  //  api
+  //    .delete(`/api/users/delete/${id}/`)
+  //    .then((res) => {
+  //      if (res.status === 204) alert("User deleted");
+  //      else alert("Failed to delete user.");
+  //      getNotes();
+  //    })
+  //    .catch((error) => alert(error));
+  //};
+
+  //const createUser = (e) => {
+  //  e.preventDefault();
+  //  api
+  //    .post("/api/register/user/", { first_name, last_name, email, role })
+  //    .then((res) => {
+  //      if (res.status === 201) alert("User created!");
+  //      else alert("Failed to create user.");
+  //      getNotes();
+  //    })
+  //    .catch((err) => alert(err));
+  //};
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-black">
-      <div>
-        <h2>Users</h2>
-        {users.map((user) => (
-          <User user={user} key={user.first_name} />
-        ))}
+    <div className="min-h-screen bg-white text-black">
+      <AdminHeader />
+      <div className="text-center text-3xl font-bold py-4">
+        <h2>Manage Users</h2>
       </div>
-      <h2>Create a User</h2>
-      <form onSubmit={createUser}>
-        <div>
-          <label htmlFor="firstName">First Name:</label>
-          <br />
-          <input
-            type="name"
-            id="firstName"
-            name="firstName"
-            required
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
-          />
+      <div className="mx-8 flex flex-row items-start justify-center space-x-16">
+        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
+          {users.length > 0 ? (
+            users.map((user) => (
+              <div key={user.id}>
+                <UserPanel user={user} onEditClick={() => openEditForm(user)} />
+              </div>))
+          ) : (<p className="text-center text-black font-bold">No users in the system</p>
+          )}
         </div>
-
-        <div>
-          <label htmlFor="lastName">lastName:</label>
-          <br />
-          <input
-            id="lastName"
-            name="lastName"
-            required
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+        <div className="border-8 border-black p-6 rounded shadow-lg w-80 text-center bg-orange-200">
+          <h3 className="text-xl font-bold mb-4">Add User</h3>
+          <form className="space-y-4">
+            <input
+              type="text"
+              name="first_name"
+              placeholder="First Name"
+              className="w-full p-2 border-4 border-black rounded-xl"
+              required
+            />
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+              className="w-full p-2 border-4 border-black rounded-xl"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="w-full p-2 border-4 border-black rounded-xl"
+              required
+            />
+            <input
+              type="text"
+              name="role"
+              placeholder="Role"
+              className="w-full p-2 border-4 border-black rounded-xl"
+              required
+            />
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600"
+            >
+              Add User
+            </button>
+          </form>
         </div>
+      </div>
+      {showEditForm && selectedUser && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-orange-200 p-6 rounded shadow-lg w-80 text-center border-black border-4">
+            <h3 className="text-xl font-bold mb-4">Edit User</h3>
+            <form className="space-y-4">
+              <input
+                type="text"
+                name="first_name"
+                value={selectedUser.first_name}
+                onChange={handleInputChange}
+                className="w-full p-2 rounded-xl border-4 border-black"
+              />
+              <input
+                type="text"
+                name="last_name"
+                value={selectedUser.last_name}
+                onChange={handleInputChange}
+                className="w-full p-2 border-4 rounded-xl border-black"
+              />
+              <input
+                type="email"
+                name="email"
+                value={selectedUser.email}
+                onChange={handleInputChange}
+                className="w-full p-2 border-4 rounded-xl border-black"
+              />
+              <input
+                type="text"
+                name="role"
+                value={selectedUser.role}
+                onChange={handleInputChange}
+                className="w-full p-2 border-4 rounded-xl border-black"
+              />
+              <div className="flex space-x-4 mt-4">
+                <button
+                  type="button"
+                  className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600 shadow-xl"
+                  onClick={closeEditForm}
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="w-full bg-red-500 text-white p-2 rounded-3xl hover:bg-red-600 shadow-xl"
+                  onClick={closeEditForm}
+                >
+                  Delete
+                </button>
 
-        <div>
-          <label htmlFor="email">Email:</label>
-          <br />
-          <input
-            id="email"
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+                <button
+                  type="button"
+                  className="w-full bg-gray-500 text-white p-2 rounded-3xl hover:bg-gray-600 shadow-xl"
+                  onClick={closeEditForm}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-
-        <div>
-          <label htmlFor="role">Role:</label>
-          <br />
-          <input
-            id="role"
-            name="role"
-            required
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
-        </div>
-
-        <input type="submit" value="Submit"></input>
-      </form>
+      )}
     </div>
   );
 };
 
-
-export default User;
+//export default withAuth(ManageUsers);
+export default ManageUsers;
