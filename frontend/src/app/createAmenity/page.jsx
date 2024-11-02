@@ -12,13 +12,21 @@ function CreateAmenity() {
     const [imageURL, setImageURL] = useState("");
     const [rules, setRules] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleCreateAmenity = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
+
+        if (!amenityName.trim()) {
+            setError("Amenity Name is required.");
+            setLoading(false);
+            return;
+        }
 
         try {
-            const response = await api.post("api/amenity/create/", {
+            const response = await api.post("/api/amenity/create/", {
                 name: amenityName,
                 description,
                 roomNumber,
@@ -37,7 +45,7 @@ function CreateAmenity() {
                 alert("Failed to add amenity.");
             }
         } catch (error) {
-            alert("An error occurred: " + error.message);
+            setError("An error occurred: " + error.message);
         } finally {
             setLoading(false);
         }
@@ -47,6 +55,8 @@ function CreateAmenity() {
         <div className="bg-container">
             <form onSubmit={handleCreateAmenity} className="form-container">
                 <h1 className="form-title">Add a New Amenity</h1>
+
+                {error && <p className="error-message">{error}</p>}
 
                 <input
                     className="form-input"
@@ -91,23 +101,10 @@ function CreateAmenity() {
 
                 {loading && <LoadingIndicator />}
 
-                <button className="form-button" type="submit">
+                <button className="form-button" type="submit" disabled={loading}>
                     {loading ? "Adding..." : "Add Amenity"}
                 </button>
             </form>
-        </div>
-    );
-}
-
-function TestPage() {
-    return (
-        <div className="bg-container">
-            <div className="form-container">
-                <h1>Test Page</h1>
-                <input className="form-input" placeholder="Sample Input" />
-                <textarea className="form-input" placeholder="Sample Textarea"></textarea>
-                <button className="form-button">Submit</button>
-            </div>
         </div>
     );
 }
