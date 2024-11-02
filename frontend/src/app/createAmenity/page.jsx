@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import api from "../../api.js";
 import "./createAmenity.css";
 import LoadingIndicator from "@/components/LoadingIndicator.jsx";
@@ -11,19 +11,50 @@ function CreateAmenity() {
     const [roomNumber, setRoomNumber] = useState("");
     const [imageURL, setImageURL] = useState("");
     const [rules, setRules] = useState("");
-    const [status, setStatus] = useState("Available");
     const [loading, setLoading] = useState(false);
+    const [amenities, setAmenities] = useState([]);
+
+    useEffect(() => {
+        const fetchAmenities = async () => {
+            try {
+                const response = await api.get("/api/amenity/list");
+                setAmenities(response.data);
+            } catch (error) {
+                console.error("Failed to load amenities:", error);
+            }
+        };
+        fetchAmenities();
+    }, []);
+
+    const existingAmenities = amenities.map(a => a.name.toLowerCase());
 
     const handleCreateAmenity = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        if (amenityName.trim() === "") {
+            alert("Amenity Name cannot be empty.");
+            setLoading(false);
+            return;
+        }
+
+        if (existingAmenities.includes(amenityName.toLowerCase())) {
+            alert("An amenity with this name already exists. Please try again later.");
+            setLoading(false);
+            return;
+        }
+
+        if (isNaN(roomNumber) || roomNumber.trim() === "" ) {
+            alert("Room number cannot be empty.");
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await api.post("api/amenity/create/", {
                 name: amenityName,
                 description,
                 roomNumber,
-                status,
                 image: imageURL,
                 rules,
             });
@@ -35,7 +66,6 @@ function CreateAmenity() {
                 setRoomNumber("");
                 setImageURL("");
                 setRules("");
-                setStatus("Available");
             } else {
                 alert("Failed to add amenity.");
             }
@@ -76,17 +106,6 @@ function CreateAmenity() {
                     placeholder="Room Number/ID"
                     required
                 />
-
-                <select
-                    className="form-input"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    required
-                >
-                    <option value="Available">Available</option>
-                    <option value="Occupied">Occupied</option>
-                    <option value="Under Maintenance">Under Maintenance</option>
-                </select>
 
                 <input
                     className="form-input"
