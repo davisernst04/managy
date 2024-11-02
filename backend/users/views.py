@@ -186,10 +186,12 @@ class DelUserFromAdminView(generics.DestroyAPIView):
     serializer_class = UserFromAdminSerl
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({"message": "Member deleted successfully"},
-                        status=status.HTTP_204_NO_CONTENT)
+        try:
+            instance = self.get_object()  # Get the object to delete
+            self.perform_destroy(instance)  # Call the method to delete the instance
+            return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({"error": "User not found + "+str(e)}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_destroy(self, instance):
         instance.delete()
