@@ -1,6 +1,6 @@
 /* Background Container */
 .bg-container {
-    background-image: url('public/images/house_login.jpg?height=1080&width=1920');
+    background-image: url('/images/house_login.jpg?height=1080&width=1920');
     width: 100vw;
     height: 100vh;
     background-position: center;
