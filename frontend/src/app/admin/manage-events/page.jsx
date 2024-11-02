@@ -1,8 +1,9 @@
 "use client";
-
+import AdminHeader from "@/components/AdminHeader";
 import { withAuth } from "@/components/withAuth.jsx";
 
 const ManageEvents = () => {
-  return <div> ManageEvents </div>;
+  return
+
 };
 export default withAuth(ManageEvents);

@@ -1,107 +1,85 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import api from "@/api";
+import AdminHeader from "@/components/AdminHeader";
+import { useState } from "react";
+import User from "@/components/User";
+import { withAuth } from "@/components/withAuth";
 
-const User = () => {
-  const [users, setUsers] = useState([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+const ManageUsers = () => {
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      first_name: "test",
+      last_name: "test",
+      email: "test@test.com",
+      role: "member",
+    },
+  ]);
 
-  useEffect(() => {
-    getUsers();
-  }, []);
+  const [newUser, setNewUser] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "",
+  });
 
-
-  const getUsers = () => {
-    api
-      .get("/api/user/view/")
-      .then((res) => res.data)
-      .then((data) => {
-        setUsers(data);
-        console.log(data);
-      })
-      .catch((err) => alert(err));
-  };
-
-  const createUser = (e) => {
-    e.preventDefault();
-    api
-      .post("/api/admin/createuser/", { firstName, lastName, email, role, })
-      .then((res) => {
-        if (res.status === 201) alert("User created");
-        else alert("Failed to create user");
-        getNotes();
-      })
-      .catch((err) => alert(err));
-  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-black">
-      <div>
-        <h2>Users</h2>
-        {users.map((user) => (
-          <User user={user} key={user.first_name} />
-        ))}
+    <div className="min-h-screen bg-white text-black">
+      <AdminHeader />
+      <div className="text-center text-3xl font-bold py-4">
+        <h2>Manage Users</h2>
       </div>
-      <h2>Create a User</h2>
-      <form onSubmit={createUser}>
-        <div>
-          <label htmlFor="firstName">First Name:</label>
-          <br />
-          <input
-            type="name"
-            id="firstName"
-            name="firstName"
-            required
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
-          />
+      <div className="mx-8 flex flex-row items-start justify-center space-x-16">
+        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
+          {users.length > 0 ? (
+            users.map((user) => <User user={user} key={user.id} />)
+          ) : (
+            <p className="text-center text-black font-bold">No users in the system</p>
+          )}
+        </div>        <div className="border-8 border-black p-6 rounded shadow-lg w-80 text-center bg-orange-200">
+          <h3 className="text-xl font-bold mb-4">Add User</h3>
+          <form className="space-y-4">
+            <input
+              type="text"
+              name="first_name"
+              placeholder="First Name"
+              className="w-full p-2 border rounded"
+              required
+            />
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Last Name"
+              className="w-full p-2 border rounded"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="w-full p-2 border rounded"
+              required
+            />
+            <input
+              type="text"
+              name="role"
+              placeholder="Role"
+              className="w-full p-2 border rounded"
+              required
+            />
+            <button
+              type="submit"
+              className="w-full border-4 border-black bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            >
+              Add User
+            </button>
+          </form>
         </div>
-
-        <div>
-          <label htmlFor="lastName">lastName:</label>
-          <br />
-          <input
-            id="lastName"
-            name="lastName"
-            required
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="email">Email:</label>
-          <br />
-          <input
-            id="email"
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="role">Role:</label>
-          <br />
-          <input
-            id="role"
-            name="role"
-            required
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
-        </div>
-
-        <input type="submit" value="Submit"></input>
-      </form>
+      </div>
     </div>
   );
 };
 
-
-export default User;
+//export default withAuth(ManageUsers);
+export default ManageUsers;

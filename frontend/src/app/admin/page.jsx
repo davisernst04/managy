@@ -1,4 +1,6 @@
 "use client";
+
+import AdminHeader from "@/components/AdminHeader";
 import Image from "next/image";
 import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
@@ -32,18 +34,7 @@ const Admin = () => {
   };
   return (
     <div className="min-h-screen flex flex-col bg-white text-black">
-      <header className="flex justify-between items-center p-4 bg-gray-700 text-white">
-        <h1 className="text-4xl text-center">Managy Administration</h1>
-        <button className="border-4 p-2 rounded hover:bg-gray-700">
-          <Image
-            src="/images/menu.png"
-            alt="menu"
-            width={40}
-            height={40}
-            priority
-          />
-        </button>
-      </header>
+      <AdminHeader />
       <main className="flex flex-grow items-center justify-center p-8 overflow-y-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl">
           <button
