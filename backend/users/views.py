@@ -1,5 +1,5 @@
 from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
-from .serializers import UserFromAdminSerl
+from .serializers import UserFromAdminSerl, UserFromAdminBatchSerl
 from .models import Person, Worker, Member, Admin
 from .permissions import IsMember, IsAdmin, IsWorker
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -125,7 +125,8 @@ class UserFromAdminView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         admin_id = self.request.user.id
-        user = serializer.save(admin_id=admin_id)
+        serializer.save(admin_id=admin_id)
+
 
 class DelUserFromAdminView(generics.DestroyAPIView):
     queryset = Person.objects.all()
@@ -140,6 +141,15 @@ class DelUserFromAdminView(generics.DestroyAPIView):
                         status=status.HTTP_204_NO_CONTENT)
 
     def perform_destroy(self, instance):
-        myid = instance.id
         instance.delete()
-        return {"message": "Deleted User with ID: "+ str(myid)}
+
+
+class UserFromAdminBatchView(generics.CreateAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdmin]
+    serializer_class = UserFromAdminBatchSerl
+
+    def perform_create(self, serializer):
+        admin_email = self.request.user.email
+        admin_password = self.request.user.password
+        serializer.save(admin_email=admin_email, admin_password=admin_password)

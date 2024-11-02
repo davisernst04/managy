@@ -8,6 +8,10 @@ from api.models import RecreationalVenue
 
 from rest_framework.exceptions import ValidationError
 
+from .requests import send_post_request_createBatch
+
+import pandas as pd
+
 
 class PersonSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -131,3 +135,47 @@ class UserFromAdminSerl(serializers.ModelSerializer):
         user.recreational_venue.add(recreational_venue)
 
         return user
+
+
+class UserFromAdminBatchSerl(serializers.ModelSerializer):
+    excel_link = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Person
+        fields = ["role", "excel_link"]
+
+    def create(self, validated_data):
+        "admin_email=admin_email, admin_password=admin_password"
+        "sent in args"
+
+        role = validated_data.pop("role")
+        excel_file = validated_data.pop('excel_link')
+
+        file_path = excel_file
+        df = pd.read_excel(file_path)
+        api_url = "http://127.0.0.1:8000/users/admin/createuser/"
+        done_isd = []
+
+        try:
+            for index, row in df.iterrows():
+                name = row['name']
+                email = row['email']
+
+                data = {
+                    "username": validated_data.get("admin_email"),
+                    "password": validated_data.get("admin_password"),
+                    "first_name": name,
+                    "email": email,
+                    "role": role,
+                    "recreational_venue_id": None
+                }
+                done_isd.append(send_post_request_createBatch(api_url, data))
+
+        except Exception as e:
+            for idi in done_isd:
+                instance = Person.objects.get(pk=idi)
+                instance.delete()
+            raise AttributeError({"message": "Due to error: "+str(e)+"\nUsers "
+                                    "created were rolled back: "+str(done_isd)})
+
+        return {"message": "Users Successfully Created"}
