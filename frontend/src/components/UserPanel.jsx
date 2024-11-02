@@ -1,6 +1,6 @@
 const UserPanel = ({ user, onEditClick }) => {
   return (
-    <div className="relative border border-black rounded m-4 shadow-xl bg-white">
+    <div className="relative border-4 border-black rounded m-4 shadow-xl bg-white">
       <button
         onClick={() => onEditClick(user)}
         className="border bg-gray-600 rounded-3xl absolute top-2 px-4 right-2 text-white font-bold hover:bg-gray-700 shadow-xl"
