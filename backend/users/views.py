@@ -126,7 +126,6 @@ class UserFromAdminView(generics.CreateAPIView):
     def perform_create(self, serializer):
         admin_id = self.request.user.id
         user = serializer.save(admin_id=admin_id)
-        return {"message": "Success", "id": user.id}
 
 class DelUserFromAdminView(generics.DestroyAPIView):
     queryset = Person.objects.all()

@@ -92,6 +92,7 @@ class AdminSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         recreational_venue_id = validated_data.pop('recreational_venue_id')
         admin = Admin.create_admin(**validated_data)
+
         return admin
 
 
