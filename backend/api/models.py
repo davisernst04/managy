@@ -1,5 +1,3 @@
-import uuid
-from users.models import Person, Member
 from django.db import models
 from django.core.validators import MinValueValidator
 from datetime import date
@@ -8,7 +6,7 @@ class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="notes")
 
     def __str__(self):
         return self.title
@@ -20,7 +18,7 @@ class Amenity(models.Model):
     occupied = models.BooleanField(default=False)
     member_user = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="amenity")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="amenity")
     image = models.TextField()
 
     def __str__(self):
@@ -64,7 +62,7 @@ class Events(models.Model):
     eventDate = models.DateField()
     eventCapacity = models.IntegerField(validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="event")
 
     def __str__(self):
         return self.eventName
@@ -96,7 +94,7 @@ class Booking(models.Model):
     #booked_status = models.BooleanField(default=False)
     #date = models.TextField(default=None)
     #time_slot = models.TextField(default=None)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="Booking")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="Booking")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -115,7 +113,7 @@ class BookingAmenity(Booking):
     amenity_details = models.TextField()
     amenity_capacity = models.IntegerField(default=0)
     amenity_id = models.IntegerField(default=0)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="booking_amenity")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="booking_amenity")
     created_at = models.DateTimeField(auto_now_add=True)
 
 class EventSelection(Booking):
@@ -128,7 +126,7 @@ class EventSelection(Booking):
     numRegistered = models.IntegerField()
     membersRegistered = models.ManyToManyField('users.Member', related_name="event_selection_members")
     created_at = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="event_selection")
+    author = models.ForeignKey('users.Person', on_delete=models.CASCADE, related_name="event_selection")
 
     def getMembers(self):
         return self.membersRegistered

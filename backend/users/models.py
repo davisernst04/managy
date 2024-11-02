@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
+from api.models import Events,Amenity
+
 
 class PersonManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -41,14 +43,16 @@ class Person(AbstractUser):
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
+    recreational_venue = models.ManyToManyField('api.RecreationalVenue',related_name="recreational_venue")
     objects = PersonManager()
 
     def getInfo(self):
         return [str(self.user.id), str(self.name), str(self.last_name), str(self.email), str(self.dob), str(self.telephone), str(self.role)]
 
     def getId(self):
-        return self.id
+        return self.person_id
 
+    #def delete(self):
     #def updateInfo(self):
 
 class Member(Person):
@@ -64,22 +68,18 @@ class Member(Person):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
     def getAmenity(self,id):
-        from api.models import Amenity
         try:
             amenity=Amenity.objects.get(id=id)
             return amenity
         except self.models.DoesNotExist:
             ValueError("Error Amenity doesn't exist")
             return None
-
-    def getEventList(self):
-        from api.models import Event
-        return Event.objects.all()
+    def getEventList(cls):
+        return Events.objects.all()
 
     def getEvent(self,id):
-        from api.models import Event
         try:
-            event=Event.objects.get(id=id)
+            event=Events.objects.get(id=id)
             return event
         except self.models.DoesNotExist:
             ValueError("Error Amenity doesn't exist")
@@ -96,12 +96,11 @@ class Worker(Person):
         extra_fields.setdefault('role', 'worker')
         return cls.objects.create_user(email, password, **extra_fields)
 
-    def viewEvents(self):
-        from api.models import Event
-        return Event.objects.all()
+    @classmethod
+    def viewEvents(cls):
+        return Events.objects.all()
 
     def getAmenity(self,id):
-        from api.models import Amenity
         try:
             amenity=Amenity.objects.get(id=id)
             return amenity
@@ -113,7 +112,6 @@ class Worker(Person):
 
 class Admin(Person):
     address = models.TextField()
-    recreational_venue = models.ManyToManyField('api.RecreationalVenue',related_name="recreational_venue")
     @classmethod
     def create_admin(cls, email, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')
@@ -151,6 +149,5 @@ class Admin(Person):
             user.delete()
         except self.models.DoesNotExist:
             raise ValueError("User Not found")
-
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"

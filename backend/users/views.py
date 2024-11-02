@@ -1,4 +1,7 @@
+#import string
 import string
+
+from api.models import RecreationalVenue
 
 from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
 from .models import Person, Worker, Member, Admin
@@ -8,6 +11,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 import random
+
 
 class UserListView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -40,7 +44,6 @@ class UserSearchViewMultiple(generics.ListAPIView):
         id=self.kwargs.get('id','')
         role=self.kwargs.get('role', '')
         email=self.kwargs.get('email','')
-
         Search=Admin.find_person(id=id,name=name,role=role,email=email)
 
         return Search
@@ -70,12 +73,15 @@ class CreateUserView(generics.CreateAPIView):
         role = self.request.data.get('role')
         email = self.request.data.get('email')
         name = self.request.data.get('first_name')
+        admin = self.request.user
 
-        temp_username=f"temp_user_{email.split('@')[0]}"
+        temp_username = "Tempuser-"+str(name)+"-"+str(email)+"-"+str(role)
         random_pass = self.RandomString(20)
         random_int = random.randint(0, 99999)
 
+
         user = serializer.save(username=temp_username,password=random_pass,role=role,email=email,person_id=random_int)
+        user.recreational_venue.add(*admin.recreational_venue.all())
         return user
 
 class CreateUserWorkerView(generics.CreateAPIView):
@@ -103,7 +109,6 @@ class CreateUserAdminView(generics.CreateAPIView):
         return Person.objects.all()
 
     def perform_create(self, serializer):
-        from api.models import RecreationalVenue
         recreational_id = self.request.data.get('recreational_venue_id')
         if not recreational_id:
             raise ValidationError("Recreational venue ID must be provided.")

@@ -2,9 +2,11 @@ from rest_framework import serializers
 from .models import Person, Worker, Member, Admin
 
 class PersonSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Person
-        fields = ["first_name", "email", "role","username", "password", "first_name", "last_name", "email", "dob", "telephone","person_id"]
+
+        fields = ["first_name", "email", "role","username", "password", "first_name", "last_name", "email", "dob", "telephone","person_id","recreational_venue"]
         extra_kwargs = {
             'username':  {'read_only': True},
             'last_name': {'read_only': True},
@@ -13,9 +15,8 @@ class PersonSerializer(serializers.ModelSerializer):
             'dob':       {'read_only': True},
             'person_id': {'read_only': True},
             'telephone': {'read_only': True},
+            'recreational_venue': {"read_only": True}
         }
-        # No one can read the password
-        #extra_kwargs = {"password": {"write_only": True}}
 
 class WorkerSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
