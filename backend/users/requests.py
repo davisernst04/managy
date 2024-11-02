@@ -6,8 +6,8 @@ api = config('API')
 username = config('APIUSERNAME')
 mypassword = config('API_PWD')
 
-tokenapi = api+"api/token/"
-api_batch = api+"users/admin/createuser/"
+tokenapi = api+"/api/token/"
+api_batch = api+"/users/admin/createuser/"
 
 
 def send_post_token(data):
