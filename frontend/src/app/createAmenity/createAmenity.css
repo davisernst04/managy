@@ -63,3 +63,17 @@ h1 {
     margin-bottom: 20px;
     text-align: center;
 }
+
+/* Sorting Controls */
+.sort-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.sort-select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
