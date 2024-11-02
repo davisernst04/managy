@@ -1,3 +1,5 @@
+import string
+
 from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
 from .models import Person, Worker, Member, Admin
 from .permissions import IsMember, IsAdmin, IsWorker
@@ -5,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import generics
 from rest_framework.exceptions import ValidationError
-
+import random
 
 class UserListView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -60,14 +62,21 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
+    def RandomString(self,n):
+        chars = string.ascii_letters + string.digits
+        return "".join(random.choice(chars) for _ in range(n))
+
     def perform_create(self,serializer):
         role = self.request.data.get('role')
         email = self.request.data.get('email')
         name = self.request.data.get('first_name')
 
         temp_username=f"temp_user_{email.split('@')[0]}"
-        #user = serializer.save(username=temp_username,role=role,email=email)
-        Admin.create_person(self,username=temp_username,name=name,role=role,email=email)
+        random_pass = self.RandomString(20)
+        random_int = random.randint(0, 99999)
+
+        user = serializer.save(username=temp_username,password=random_pass,role=role,email=email,person_id=random_int)
+        return user
 
 class CreateUserWorkerView(generics.CreateAPIView):
     serializer_class = WorkerSerializer
@@ -78,11 +87,9 @@ class CreateUserWorkerView(generics.CreateAPIView):
             return worker
 
 
-
 class CreateUserMemberView(generics.CreateAPIView):
     serializer_class = MemberSerializer
     permission_classes = [AllowAny]
-
 
     def perform_create(self, serializer):
         member = serializer.save()
@@ -102,7 +109,8 @@ class CreateUserAdminView(generics.CreateAPIView):
             raise ValidationError("Recreational venue ID must be provided.")
         try:
             recreational_venue=RecreationalVenue.objects.get(id=recreational_id)
-            admin = serializer.save()
+            random_int = random.randint(0, 99999)
+            admin = serializer.save(person_id=random_int)
             admin.recreational_venue.add(recreational_venue)
         except RecreationalVenue.DoesNotExist:
             raise ValidationError("Recreational venue doesn't exist")

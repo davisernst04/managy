@@ -36,6 +36,7 @@ class Person(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(unique=True)
+    person_id = models.IntegerField(unique=True)
     role = models.CharField(max_length=10, choices=ROLES, default='member')
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
@@ -118,7 +119,7 @@ class Admin(Person):
         extra_fields.setdefault('role', 'admin')
         return cls.objects.create_superuser(email, password, **extra_fields)
 
-    def create_person(self,name, email, role, password=None, **extra_fields):
+    def create_person(self,name, email, role,password=None, **extra_fields):
         if(role=='member'):
             Member.create_member(name,email,**extra_fields)
         elif(role=='worker'):
