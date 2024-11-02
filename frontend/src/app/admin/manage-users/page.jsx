@@ -2,7 +2,7 @@
 
 import AdminHeader from "@/components/AdminHeader";
 import { useState } from "react";
-import User from "@/components/User";
+import UserPanel from "@/components/UserPanel";
 import { withAuth } from "@/components/withAuth";
 
 const ManageUsers = () => {
@@ -23,6 +23,9 @@ const ManageUsers = () => {
     role: "",
   });
 
+  const handleEditClick = (user) => {
+    console.log("Edit user:", user);
+  };
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -33,7 +36,7 @@ const ManageUsers = () => {
       <div className="mx-8 flex flex-row items-start justify-center space-x-16">
         <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
           {users.length > 0 ? (
-            users.map((user) => <User user={user} key={user.id} />)
+            users.map((user) => <UserPanel user={user} key={user.id} onEditClick={handleEditClick} />)
           ) : (
             <p className="text-center text-black font-bold">No users in the system</p>
           )}

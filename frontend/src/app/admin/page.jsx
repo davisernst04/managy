@@ -69,4 +69,8 @@ const Admin = () => {
             onClick={handleManageEvents}
             className="flex flex-col items-center border-4 border-black p-4 shadow-xl bg-orange-100 rounded h-80 transition duration-300 ease-in-out transform hover:bg-orange-200 hover:scale-105"
           > <Image src="/images/AdminEvent.png" alt="Manage Events" width={200} height={200} priority className="mb-4" /> <span className="text-lg">Manage Events</span> </button> </div> </main> </div>);
-}; export default withAuth(Admin);
+};
+
+
+//export default withAuth(Admin); ––use when implementing API
+export default Admin;
