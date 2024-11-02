@@ -145,15 +145,16 @@ class UserFromAdminBatchSerl(serializers.ModelSerializer):
         fields = ["role", "excel_link"]
 
     def create(self, validated_data):
-        "admin_email=admin_email, admin_password=admin_password"
-        "sent in args"
 
         role = validated_data.pop("role")
         excel_file = validated_data.pop('excel_link')
+        ''''excel_file = ("https://storage.googleapis.com/download/storage/"
+                      "v1/b/managy_bucket/o/admin_excel%2Ftestbatchcreation.xlsx?"
+                      "generation=1730534493063868&alt=media")'''
 
         file_path = excel_file
-        df = pd.read_excel(file_path)
-        api_url = "http://127.0.0.1:8000/users/admin/createuser/"
+        #df = pd.read_excel(file_path)
+        df = pd.read_excel(file_path, engine='openpyxl')
         done_isd = []
 
         try:
@@ -162,14 +163,12 @@ class UserFromAdminBatchSerl(serializers.ModelSerializer):
                 email = row['email']
 
                 data = {
-                    "username": validated_data.get("admin_email"),
-                    "password": validated_data.get("admin_password"),
                     "first_name": name,
                     "email": email,
                     "role": role,
                     "recreational_venue_id": None
                 }
-                done_isd.append(send_post_request_createBatch(api_url, data))
+                done_isd.append(send_post_request_createBatch(data))
 
         except Exception as e:
             for idi in done_isd:

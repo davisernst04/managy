@@ -1,8 +1,39 @@
 import requests
+from decouple import config
+
+api = config('API')
+username = config('APIUSERNAME')
+
+tokenapi = api+"api/token/"
+api_batch = api+"users/admin/createuser/"
 
 
-def send_post_request_createBatch(api_url, data):
-    response = requests.post(api_url, json=data)
+def send_post_token(data):
+    response = requests.post(tokenapi, json=data)
+
+    if (response.status_code == 200) or (response.status_code == 201):
+        print("Post created successfully:", response.json())
+        response_data = response.json()
+        token = response_data.get('access')
+        return token
+    else:
+        raise ValueError("Failed to create POST:", response.status_code, response.text)
+
+
+def send_post_request_createBatch(data):
+    auth_token = send_post_token({
+        "username": username,
+        "password": config('DB_PWD')
+    })
+
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+!! "+auth_token)
+
+    headers = {
+        'Authorization': f'Token {auth_token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(api_batch, json=data, headers=headers)
 
     if response.status_code == 201:
         print("Post created successfully:", response.json())

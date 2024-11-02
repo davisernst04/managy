@@ -150,6 +150,4 @@ class UserFromAdminBatchView(generics.CreateAPIView):
     serializer_class = UserFromAdminBatchSerl
 
     def perform_create(self, serializer):
-        admin_email = self.request.user.email
-        admin_password = self.request.user.password
-        serializer.save(admin_email=admin_email, admin_password=admin_password)
+        serializer.save()

@@ -18,5 +18,6 @@ urlpatterns = [
     path("users/register/member/", userView.CreateUserMemberView.as_view(), name="register-member"),
     path("users/register/admin/", userView.CreateUserAdminView.as_view(), name="register-member"),
     path("users/admin/createuser/", userView.UserFromAdminView.as_view(), name="users-from-admin"),
-    path("users/admin/deleteuser/<int:pk>/", userView.DelUserFromAdminView.as_view(), name="delusers-from-admin")
+    path("users/admin/deleteuser/<int:pk>/", userView.DelUserFromAdminView.as_view(), name="delusers-from-admin"),
+    path("user/admin/createuserbatch/", userView.UserFromAdminBatchView.as_view(), name="create-users-batch")
 ]

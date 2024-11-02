@@ -8,15 +8,13 @@ from .utils import RandomString
 
 class PersonManager(BaseUserManager):
     def create_user(self, **extra_fields):
-        if not extra_fields["email"]:
-            raise ValueError("The Email field must be set to a valid input")
         extra_fields["email"] = self.normalize_email(extra_fields["email"])
         user = self.model(**extra_fields)
         user.set_password(extra_fields["password"])
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'admin')
@@ -25,7 +23,7 @@ class PersonManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get('is_superuser') is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(**extra_fields)
 
     def delete_user(self, user):
         user.delete()
@@ -124,10 +122,10 @@ class Admin(Person):
     address = models.TextField()
 
     @classmethod
-    def create_admin(cls, email, password=None, **extra_fields):
+    def create_admin(cls, **extra_fields):
         extra_fields.setdefault('role', 'admin')
-        extra_fields['username'] = email
-        return cls.objects.create_superuser(email, password, **extra_fields)
+        extra_fields['username'] = extra_fields['email']
+        return cls.objects.create_superuser(**extra_fields)
 
     def create_person(**extra_fields):
         extra_fields['username'] = extra_fields["email"]
