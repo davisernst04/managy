@@ -30,10 +30,9 @@ const Admin = () => {
       alert(error.message);
     }
   };
-
   return (
     <div className="min-h-screen flex flex-col bg-white text-black">
-      <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
+      <header className="flex justify-between items-center p-4 bg-gray-700 text-white">
         <h1 className="text-4xl text-center">Managy Administration</h1>
         <button className="border-4 p-2 rounded hover:bg-gray-700">
           <Image
@@ -78,21 +77,5 @@ const Admin = () => {
           <button
             onClick={handleManageEvents}
             className="flex flex-col items-center border-4 border-black p-4 shadow-xl bg-orange-100 rounded h-80 transition duration-300 ease-in-out transform hover:bg-orange-200 hover:scale-105"
-          >
-            <Image
-              src="/images/AdminEvent.png"
-              alt="Manage Events"
-              width={200}
-              height={200}
-              priority
-              className="mb-4"
-            />
-            <span className="text-lg">Manage Events</span>
-          </button>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default withAuth(Admin);
+          > <Image src="/images/AdminEvent.png" alt="Manage Events" width={200} height={200} priority className="mb-4" /> <span className="text-lg">Manage Events</span> </button> </div> </main> </div>);
+}; export default withAuth(Admin);

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -109,7 +110,7 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PWD'),
     }
 }
-
+AUTH_USER_MODEL = 'users.Person'  # Adjust 'users' to your app name
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

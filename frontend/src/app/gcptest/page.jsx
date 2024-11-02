@@ -4,12 +4,12 @@ import { uploadToGCP } from "@/components/cloud_storage";
 
 function GCPtest(){
 
-    const testupload = "test/testupload.txt";
+    const testupload = "test/testbatchcreation.xlsx";
 
     // Ahora puedes usar uploadToGCP en este archivo
 
     const handleUpload = async () => {
-        uploadToGCP(`${testupload}`, 'admin_excel/', 'testfile.txt', 0)
+        uploadToGCP(`${testupload}`, 'admin_excel/', 'testbatchcreation.xlsx', 1)
             .then(link => console.log('Uploading file to:', link))
             .catch(error => {
                 console.error('Error uploading file:', error);
