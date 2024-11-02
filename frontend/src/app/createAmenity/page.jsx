@@ -11,25 +11,19 @@ function CreateAmenity() {
     const [roomNumber, setRoomNumber] = useState("");
     const [imageURL, setImageURL] = useState("");
     const [rules, setRules] = useState("");
+    const [status, setStatus] = useState("Available");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const handleCreateAmenity = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-
-        if (!amenityName.trim()) {
-            setError("Amenity Name is required.");
-            setLoading(false);
-            return;
-        }
 
         try {
-            const response = await api.post("/api/amenity/create/", {
+            const response = await api.post("api/amenity/create/", {
                 name: amenityName,
                 description,
                 roomNumber,
+                status,
                 image: imageURL,
                 rules,
             });
@@ -41,11 +35,12 @@ function CreateAmenity() {
                 setRoomNumber("");
                 setImageURL("");
                 setRules("");
+                setStatus("Available");
             } else {
                 alert("Failed to add amenity.");
             }
         } catch (error) {
-            setError("An error occurred: " + error.message);
+            alert("An error occurred: " + error.message);
         } finally {
             setLoading(false);
         }
@@ -55,8 +50,6 @@ function CreateAmenity() {
         <div className="bg-container">
             <form onSubmit={handleCreateAmenity} className="form-container">
                 <h1 className="form-title">Add a New Amenity</h1>
-
-                {error && <p className="error-message">{error}</p>}
 
                 <input
                     className="form-input"
@@ -84,6 +77,17 @@ function CreateAmenity() {
                     required
                 />
 
+                <select
+                    className="form-input"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    required
+                >
+                    <option value="Available">Available</option>
+                    <option value="Occupied">Occupied</option>
+                    <option value="Under Maintenance">Under Maintenance</option>
+                </select>
+
                 <input
                     className="form-input"
                     type="url"
@@ -101,7 +105,7 @@ function CreateAmenity() {
 
                 {loading && <LoadingIndicator />}
 
-                <button className="form-button" type="submit" disabled={loading}>
+                <button className="form-button" type="submit">
                     {loading ? "Adding..." : "Add Amenity"}
                 </button>
             </form>
