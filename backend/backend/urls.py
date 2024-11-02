@@ -16,5 +16,7 @@ urlpatterns = [
     path("users/delete/<int:pk>/", userView.UserDeleteView.as_view(), name="user-delete"),
     path("users/register/worker/", userView.CreateUserWorkerView.as_view(), name="register-worker"),
     path("users/register/member/", userView.CreateUserMemberView.as_view(), name="register-member"),
-    path("users/register/admin/", userView.CreateUserAdminView.as_view(), name="register-member")
+    path("users/register/admin/", userView.CreateUserAdminView.as_view(), name="register-member"),
+    path("users/admin/createuser/", userView.UserFromAdminView.as_view(), name="users-from-admin"),
+    path("users/admin/deleteuser/<int:pk>/", userView.DelUserFromAdminView.as_view(), name="delusers-from-admin")
 ]
