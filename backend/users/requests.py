@@ -1,8 +1,10 @@
+import base64
 import requests
 from decouple import config
 
 api = config('API')
 username = config('APIUSERNAME')
+mypassword = config('DB_PWD')
 
 tokenapi = api+"api/token/"
 api_batch = api+"users/admin/createuser/"
@@ -21,15 +23,16 @@ def send_post_token(data):
 
 
 def send_post_request_createBatch(data):
-    auth_token = send_post_token({
+    '''auth_token = send_post_token({
         "username": username,
         "password": config('DB_PWD')
-    })
+    })'''
 
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+!! "+auth_token)
+    credentials = f"{username}:{mypassword}"
+    auth_token = base64.b64encode(credentials.encode()).decode()
 
     headers = {
-        'Authorization': f'Token {auth_token}',
+        'Authorization': f'Basic {auth_token}',
         'Content-Type': 'application/json'
     }
 

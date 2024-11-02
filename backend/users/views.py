@@ -151,3 +151,4 @@ class UserFromAdminBatchView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+        return {"message": "Users Successfully Created"}
