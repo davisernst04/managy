@@ -14,6 +14,7 @@ urlpatterns = [
     path("amenity/booking/create/", views.createBooking.as_view(), name="amenity-book"),
     path("amenity/booking/view/", views.getBooking.as_view(), name="amenity-book-list"),
     path("amenity/booking/cancel/<int:pk>/",views.cancelBooking.as_view(), name="amenity-cancel"),
+
     path("recreational_venue/create/", views.RecreationalVenueView.as_view(), name="recreational-create"),
 
     path("event/create/", views.EventCreate.as_view(), name="create-event"),
@@ -32,6 +33,6 @@ urlpatterns = [
 
     path("admin/createuser/", userViews.CreateUserView.as_view(), name="create-user"),
     path("admin/deleteuser/<int:pk>/", userViews.UserDeleteView.as_view(), name="user-delete"),
-    path("admin/search/<str:name>/<str:email>/<int:id>/<str:role>/", userViews.UserSearchViewMultiple.as_view(), name="user-search"),
+    path("admin/search/", userViews.UserSearchViewMultiple.as_view(), name="user-search"),
 
 ]

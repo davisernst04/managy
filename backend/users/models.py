@@ -42,7 +42,7 @@ class Person(AbstractUser):
     dob = models.DateField(null=True)
     telephone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
-    recreational_venue = models.ManyToManyField('api.RecreationalVenue', related_name="recreational_venue")
+    recreational_venue = models.ManyToManyField('api.RecreationalVenue', related_name="persons")
     objects = PersonManager()
 
     def getInfo(self):
@@ -165,3 +165,10 @@ class Admin(Person):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
+
+
+
+class PasswordReset(models.Model):
+    email = models.EmailField()
+    token = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -4,7 +4,7 @@ from decouple import config
 
 api = config('API')
 username = config('APIUSERNAME')
-mypassword = config('DB_PWD')
+mypassword = config('API_PWD')
 
 tokenapi = api+"api/token/"
 api_batch = api+"users/admin/createuser/"

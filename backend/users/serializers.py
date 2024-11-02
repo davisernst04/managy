@@ -8,9 +8,21 @@ from api.models import RecreationalVenue
 
 from rest_framework.exceptions import ValidationError
 
-from .requests import send_post_request_createBatch
+class PersonViewSerializer(serializers.ModelSerializer):
 
-import pandas as pd
+    class Meta:
+        model = Person
+        fields = ["id", "first_name", "email",
+                  "role", "username",
+                  'recreational_venue']
+
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "recreational_venue": {
+                "read_only": True
+            },
+            "username": {"read_only": True}
+        }
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -144,13 +156,10 @@ class UserFromAdminBatchSerl(serializers.ModelSerializer):
         model = Person
         fields = ["role", "excel_link"]
 
-    def create(self, validated_data):
+    '''def create(self, validated_data):
 
         role = validated_data.pop("role")
         excel_file = validated_data.pop('excel_link')
-        ''''excel_file = ("https://storage.googleapis.com/download/storage/"
-                      "v1/b/managy_bucket/o/admin_excel%2Ftestbatchcreation.xlsx?"
-                      "generation=1730534493063868&alt=media")'''
 
         file_path = excel_file
         #df = pd.read_excel(file_path)
@@ -177,4 +186,18 @@ class UserFromAdminBatchSerl(serializers.ModelSerializer):
             raise AttributeError({"message": "Due to error: "+str(e)+"\nUsers "
                                     "created were rolled back: "+str(done_isd)})
 
-        return {"message": "Users Successfully Created"}
+        return {"message": "Users Successfully Created"}'''
+
+
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+class ResetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.RegexField(
+        regex=r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+        write_only=True,
+        error_messages={
+            'invalid': ('Password must be at least 8 characters long with at least one capital letter and symbol')
+        }
+    )
+    confirm_password = serializers.CharField(write_only=True, required=True)
