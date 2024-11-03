@@ -15,9 +15,10 @@ const CreateUsers = () => {
                     "url('/images/house_register.jpg?height=1080&width=1920')",
             }}
         >
-            <Form routeCreate="/users/admin/createuser/" routeCreateBatch="/user/admin/createuserbatch/"/>
         </div>
     );
 };
 
 export default CreateUsers;
+
+/*<Form routeCreate="/users/admin/createuser/" routeCreateBatch="/user/admin/createuserbatch/"/>*/

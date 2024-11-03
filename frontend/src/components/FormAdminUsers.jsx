@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+/*import { useState, useEffect } from "react";
 import api from "@/api.js";
 import "@/styles/FormRegister.css";
 import LoadingIndicator from "./LoadingIndicator.jsx";
@@ -33,7 +33,7 @@ function FormAdminUsers({ routeCreate, routeCreateBatch }) {
     const handleSubmitIndv = async (e) => {
         setLoading(true);
         e.preventDefault();
-        /*Avoid submitting the data, first perform other tasks*/
+
 
         try {
 
@@ -59,7 +59,7 @@ function FormAdminUsers({ routeCreate, routeCreateBatch }) {
   const handleSubmitBatch = async (e) => {
     setLoading(true);
     e.preventDefault();
-    /*Avoid submitting the data, first perform other tasks*/
+
 
     try {
 
@@ -83,7 +83,7 @@ function FormAdminUsers({ routeCreate, routeCreateBatch }) {
       console.log(res.data);
       console.log(res.status);
 
-      /*A registered user is redirected to login*/
+
         alert("User Created");
 
     } catch (error) {
@@ -190,3 +190,4 @@ function FormAdminUsers({ routeCreate, routeCreateBatch }) {
 }
 
 export default FormAdminUsers;
+*/
