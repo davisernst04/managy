@@ -1,7 +1,7 @@
 "use client";
 
 import AdminHeader from "@/components/AdminHeader";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import UserPanel from "@/components/UserPanel";
 import { withAuth } from "@/components/withAuth";
 import api from "@/api";
@@ -110,7 +110,7 @@ const ManageUsers = () => {
     try {
 
       let data1 = {
-        'first_name': firstName1+" "+lastName1,
+        'first_name': firstName1 + " " + lastName1,
         'email': email1,
         'role': role1,
         'recreational_venue_id': null
@@ -180,17 +180,17 @@ const ManageUsers = () => {
           flag = true;
         }
       }
-      if ((id2 != null) && (id2!=='')){
-        if (flag){
-          search = search+"&id="+id2;
+      if ((id2 != null) && (id2 !== '')) {
+        if (flag) {
+          search = search + "&id=" + id2;
         } else {
-          search = search+"?id="+id2;
+          search = search + "?id=" + id2;
           flag = true;
         }
       }
-      if ((role2 != null) && (role2!=='')){
-        if (flag){
-          search = search+"&role="+role2;
+      if ((role2 != null) && (role2 !== '')) {
+        if (flag) {
+          search = search + "&role=" + role2;
         } else {
           search = search+"?role="+role2;
         }
@@ -232,74 +232,63 @@ const ManageUsers = () => {
       </div>
       <div className="flex mx-8 my-1">
         <div>
-          <h2 className="mt-1">
-            Search by Name
-          </h2>
-          <h2 className="mt-1">
-            Search by Email
-          </h2>
-          <h2 className="mt-1">
-            Search by User ID
-          </h2>
-          <h2 className="mt-1">
-            Search by Role
+          <h2 className="mt-1 font-bold">
+            Search By:
           </h2>
         </div>
-        <div>
 
-          <form onSubmit={handleUserSearch} className="mx-4 border-black border-2">
-            <input
-                type="text"
-                name="User Search"
-                value={name2}
-                onChange={(e) => setName2(e.target.value)}
-                placeholder="Name"
-                className="w-full p-2 border-4 border-black rounded-xl"
-            />
-            <input
-                type="text"
-                name="User Search1"
-                value={email2}
-                onChange={(e) => setEmail2(e.target.value)}
-                placeholder="Email"
-                className="w-full p-2 border-4 border-black rounded-xl"
-            />
-            <input
-                type="text"
-                name="User Search2"
-                value={id2}
-                onChange={(e) => setId2(e.target.value)}
-                placeholder="ID"
-                className="w-full p-2 border-4 border-black rounded-xl"
-            />
-            <select
-                name="role"
-                value={role2}
-                onChange={(e) => setRole2(e.target.value)}
-                className="w-full p-2 border-4 border-black rounded-xl"
-            >
-              <option value="" disabled>Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="member">Member</option>
-              <option value="worker">Worker</option>
-              <option value=''>None</option>
-            </select>
-            {loading && <LoadingIndicator/>}
-            <button className="myform-button font-bold" type="submit">
-              Search my user(s)
-            </button>
-          </form>
+        <form onSubmit={handleUserSearch} className="mx-4">
+          <input
+            type="text"
+            name="User Search"
+            value={name2}
+            onChange={(e) => setName2(e.target.value)}
+            placeholder="Name"
+            className="w-full p-2 border-4 border-black rounded-xl"
+          />
+          <input
+            type="text"
+            name="User Search1"
+            value={email2}
+            onChange={(e) => setEmail2(e.target.value)}
+            placeholder="Email"
+            className="w-full p-2 mt-1 border-4 border-black rounded-xl"
+          />
+          <input
+            type="text"
+            name="User Search2"
+            value={id2}
+            onChange={(e) => setId2(e.target.value)}
+            placeholder="ID"
+            className="w-full p-2 mt-1 border-4 border-black rounded-xl"
+          />
+          <select
+            name="role"
+            value={role2}
+            onChange={(e) => setRole2(e.target.value)}
+            className="w-full p-2 mt-1 border-4 border-black rounded-xl"
+          >
+            <option value="" disabled>Select Role</option>
+            <option value="admin">Admin</option>
+            <option value="member">Member</option>
+            <option value="worker">Worker</option>
+            <option value=''>None</option>
+          </select>
+          {loading && <LoadingIndicator />}
+          <button className=" mt-1 text-center myform-button font-bold border-black border-4 rounded-xl px-8 bg-orange-200 hover:bg-orange-300" type="submit font-bold">
+            Search my user(s)
+          </button>
+        </form>
 
-        </div>
       </div>
 
 
       <div className="mx-8 flex flex-row items-start justify-center space-x-16">
-        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
+        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4 mb-4">
           {usersFound.length > 0 ? (
             usersFound.map((user) => (
               <div key={user.id}>
-                <UserPanel user={user} onEditClick={() => openEditForm(user)} onDelete={deleteUser} key={user.id} />
+                <UserPanel user={user} onDeleteClick={() => openEditForm(user)} key={user.id} />
               </div>))
           ) : (<p className="text-center text-black font-bold">No users in the system</p>
           )}
@@ -393,63 +382,31 @@ const ManageUsers = () => {
         </div>
       </div>
       {showEditForm && selectedUser && (
-          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-orange-200 p-6 rounded shadow-lg w-80 text-center border-black border-4">
-              <h3 className="text-xl font-bold mb-4">Edit User</h3>
-              <form className="space-y-4">
-                <input
-                    type="text"
-                    name="first_name"
-                    value={selectedUser.first_name}
-                    onChange={handleInputChange}
-                    className="w-full p-2 rounded-xl border-4 border-black"
-                />
-                <input
-                    type="text"
-                    name="last_name"
-                    value={selectedUser.last_name}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border-4 rounded-xl border-black"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={selectedUser.email}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border-4 rounded-xl border-black"
-                />
-                <input
-                    type="text"
-                    name="role"
-                    value={selectedUser.role}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border-4 rounded-xl border-black"
-                />
-                <div className="flex space-x-4 mt-4">
-                  <button
-                      type="button"
-                      className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600 shadow-xl"
-                      onClick={closeEditForm}
-                  >
-                    Save
-                  </button>
-                  <button
-                  type="button"
-                  className="w-full bg-red-500 text-white p-2 rounded-3xl hover:bg-red-600 shadow-xl"
-                  onClick={closeEditForm}
-                >
-                  Delete
-                </button>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-orange-200 p-6 rounded shadow-lg w-80 text-center border-black border-4">
+            <h3 className="text-xl font-bold mb-4">Are you sure you want to delete this user?</h3>
+            <div className="flex space-x-4 mt-4">
+              <button
+                type="button"
+                className="w-full bg-red-500 text-white p-2 rounded-3xl hover:bg-red-600 shadow-xl"
+                onClick={() => {
+                  deleteUser(selectedUser.id)
+                  closeEditForm()
+                  handleUserSearchBegin()
 
-                <button
-                  type="button"
-                  className="w-full bg-gray-500 text-white p-2 rounded-3xl hover:bg-gray-600 shadow-xl"
-                  onClick={closeEditForm}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+                }}
+              >
+                Delete
+              </button>
+
+              <button
+                type="button"
+                className="w-full bg-gray-500 text-white p-2 rounded-3xl hover:bg-gray-600 shadow-xl"
+                onClick={closeEditForm}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
