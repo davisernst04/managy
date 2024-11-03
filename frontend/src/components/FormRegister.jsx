@@ -8,6 +8,10 @@ import LoadingIndicator from "./LoadingIndicator.jsx";
 import { navigate } from "./actions.js";
 import { uploadToGCP } from "@/components/cloud_storage";
 
+require('dotenv').config();
+
+let store_api_url =
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -29,7 +33,7 @@ function FormRegister({ routeRecr, routeAdmin }) {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [savedRecVnId, setSavedRecVnId] = useState(-1);
+  const [savedRecVnId, setSavedRecVnId] = useState("");
 
 
     const handleFileChange = (e) => {
@@ -40,7 +44,9 @@ function FormRegister({ routeRecr, routeAdmin }) {
             const formData = new FormData();
             formData.append('photo', file);
 
-            fetch('/upload', {
+            console.log("VAR:   "+ process.env.STORE_API_URL)
+
+            fetch(`${process.env.STORE_API_URL}/upload`, {
                 method: 'POST',
                 body: formData,
             })
@@ -196,6 +202,7 @@ function FormRegister({ routeRecr, routeAdmin }) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
               />
+              <p className="text-black text-left">Recreational Value ID</p>
               <input
                   className="myform-input text-black"
                   type="number"
@@ -204,6 +211,7 @@ function FormRegister({ routeRecr, routeAdmin }) {
                   onChange={(e) => setRecreational_venue_id(e.target.value)}
                   placeholder="Recreational venue ID"
               />
+              <p className="text-black text-left">Date of Birth</p>
               <input
                   className="myform-input text-black"
                   type="date"

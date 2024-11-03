@@ -35,4 +35,7 @@ urlpatterns = [
     path("admin/deleteuser/<int:pk>/", userViews.UserDeleteView.as_view(), name="user-delete"),
     path("admin/search/", userViews.UserSearchViewMultiple.as_view(), name="user-search"),
 
+    path("image/", views.uploadImageView.as_view(), name="upload-image"),
+    path("excel/", views.uploadExcelView.as_view(), name="upload-excel"),
+
 ]

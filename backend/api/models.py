@@ -4,6 +4,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from datetime import date
 
+
 class Note(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -12,6 +13,7 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Amenity(models.Model):
     name = models.CharField(max_length=50)
@@ -42,20 +44,22 @@ class Amenity(models.Model):
         return self.description
 
     def canRegister(self):
-        return (self.member_user=="") and not(self.isOccupied())
+        return (self.member_user == "") and not (self.isOccupied())
 
-    def register(self,member_us):
-        if(self.canRegister()):
-            self.occupied=True
+    def register(self, member_us):
+        if (self.canRegister()):
+            self.occupied = True
             self.member_user = str(member_us)
-            print("Success:"+str(member_us))
+            print("Success:" + str(member_us))
         else:
             print("Can't register for this amenity")
 
     def release(self):
-        self.occupied=False
+        self.occupied = False
         self.member_user = ""
         self.save()
+
+
 class Events(models.Model):
     eventName = models.CharField(max_length=50)
     eventDescription = models.TextField()
@@ -86,11 +90,13 @@ class Events(models.Model):
 
     def getId(self):
         return self.id
+
     def getEventDetails(self):
-        return  f"{self.eventName} {self.eventDescription} {self.eventLocation} {self.eventTime}"
+        return f"{self.eventName} {self.eventDescription} {self.eventLocation} {self.eventTime}"
 
     def isEventToday(self):
         return (date.today() == self.eventDate)
+
 
 class Booking(models.Model):
     #booked_status = models.BooleanField(default=False)
@@ -108,6 +114,7 @@ class Booking(models.Model):
     class Meta:
         abstract = True
 
+
 class BookingAmenity(Booking):
     amenities = models.ForeignKey(Amenity, on_delete=models.CASCADE, related_name="booking_obj")
     amenity_name = models.TextField()
@@ -117,6 +124,7 @@ class BookingAmenity(Booking):
     amenity_id = models.IntegerField(default=0)
     author = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="booking_amenity")
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class EventSelection(Booking):
     name = models.TextField()
@@ -132,8 +140,10 @@ class EventSelection(Booking):
 
     def getMembers(self):
         return self.membersRegistered
+
     def isFull(self):
         return (self.membersRegistered.count()) == (self.capacity)
+
 
 class RecreationalVenue(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -151,3 +161,15 @@ class RecreationalVenue(models.Model):
     def __str__(self):
         mystr = "Recreational Venue: " + self.name + "\n\tAddress: " + self.address
         return mystr
+
+
+class Image(models.Model):
+    image = models.ImageField()
+    title = models.CharField(max_length=255)
+    url = models.CharField()
+
+
+class ExcelFile(models.Model):
+    file = models.FileField()
+    title = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, blank=True)
