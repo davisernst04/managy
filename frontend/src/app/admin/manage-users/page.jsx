@@ -82,7 +82,7 @@ const ManageUsers = () => {
       setExcellink(res0.data.url);
 
 
-      let data1  = {
+      let data1 = {
         "role": role2,
         "excel_link": res0.data.url
       }
@@ -100,7 +100,7 @@ const ManageUsers = () => {
     }
   };
 
-  const handleSubmitUser= async (e) => {
+  const handleSubmitUser = async (e) => {
     setLoading(true);
     e.preventDefault();
 
@@ -130,6 +130,10 @@ const ManageUsers = () => {
       setLoading(false);
     }
   };
+
+
+
+
 
   // ––Use methods below when implemtning API
 
@@ -173,6 +177,57 @@ const ManageUsers = () => {
       <div className="text-center text-3xl font-bold py-4">
         <h2>Manage Users</h2>
       </div>
+      <div className="flex mx-8 my-1">
+        <div>
+          <h2 className="mt-1">
+            Search by First Name
+          </h2>
+          <h2 className="mt-1">
+            Search by Last Name
+          </h2>
+          <h2 className="mt-1">
+            Search by User ID
+          </h2>
+          <h2 className="mt-1">
+            Search by User Role
+          </h2>
+        </div>
+        <div>
+          <form onSubmit="" className="mx-4 border-black border-2" >
+            <input
+              type="text"
+              name="User Search"
+
+            />
+          </form>
+          <form onSubmit="" className="mx-4 border-black border-2" >
+            <input
+              type="text"
+              name="User Search"
+
+            />
+          </form>
+          <form onSubmit="" className="mx-4 border-black border-2" >
+            <input
+              type="text"
+              name="User Search"
+
+            />
+          </form>
+          <form onSubmit="" className="mx-4 border-black border-2" >
+            <input
+              type="text"
+              name="User Search"
+
+            />
+          </form>
+
+        </div>
+      </div>
+
+
+
+
       <div className="mx-8 flex flex-row items-start justify-center space-x-16">
         <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
           {users.length > 0 ? (
@@ -220,12 +275,12 @@ const ManageUsers = () => {
               className="w-full p-2 border-4 border-black rounded-xl"
               required
             >
-            <option value="" disabled>Select Role</option>
-            <option value="admin">Admin</option>
-            <option value="member">Member</option>
-            <option value="worker">Worker</option>
+              <option value="" disabled>Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="member">Member</option>
+              <option value="worker">Worker</option>
             </select>
-            {loading && <LoadingIndicator/>}
+            {loading && <LoadingIndicator />}
             <button
               type="submit"
               className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600"
