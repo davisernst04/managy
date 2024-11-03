@@ -1,7 +1,7 @@
 "use client";
 
 import AdminHeader from "@/components/AdminHeader";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import UserPanel from "@/components/UserPanel";
 import { withAuth } from "@/components/withAuth";
 import api from "@/api";
@@ -11,36 +11,33 @@ import { generateRandomString } from '@/utils/tools';
 const api_createUsrAdmin = "/users/admin/createuser/";
 const api_excel = "/api/excel/";
 const routeCreateBatch = "/user/admin/createuserbatch/";
+const api_searchUser = "/api/admin/search/"
+const api_deleteuser = "/users/admin/deleteuser/";
 
 const ManageUsers = () => {
+  /*Add User*/
   const [firstName1, setFirstName1] = useState("");
   const [lastName1, setLastName1] = useState("");
   const [email1, setEmail1] = useState("");
   const [role1, setRole1] = useState("");
 
+  /*Search user*/
+  const [name2, setName2] = useState('');
+  const [email2, setEmail2] = useState('');
+  const [id2, setId2] = useState('');
+  const [role2, setRole2] = useState('');
+  const [usersFound, setUsersFound] = useState([]);
 
-  const [role2, setRole2] = useState(null);
+
+  const [role3, setRole3] = useState(null);
   const [excellink, setExcellink] = useState(null);
 
   const [excelFile, setExcelFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      first_name: "test",
-      last_name: "test",
-      email: "test@test.com",
-      role: "Member",
-    },
-  ]);
-
-  const [newUser, setNewUser] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    role: "",
-  });
+  useEffect(() => {
+    handleUserSearchBegin();
+  }, []);
 
 
   // –– Mock methods to simulate API
@@ -83,7 +80,7 @@ const ManageUsers = () => {
 
 
       let data1 = {
-        "role": role2,
+        "role": role3,
         "excel_link": res0.data.url
       }
       console.log("!!!!!!Data: ", data1);
@@ -124,6 +121,8 @@ const ManageUsers = () => {
           })
           .catch((err) => alert(err));
 
+      handleUserSearch();
+
     } catch (error) {
       alert(error);
     } finally {
@@ -133,43 +132,92 @@ const ManageUsers = () => {
 
 
 
+  const handleUserSearchBegin = async (e) => {
+    setLoading(true);
+
+    try {
+
+      api
+          .get(api_searchUser)
+          .then((res) => res.data)
+          .then((data) => {
+            setUsersFound(data);
+            console.log(data);
+          })
+          .catch((err) => alert(err));
+
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
-  // ––Use methods below when implemtning API
+  const handleUserSearch = (e) => {
+    setLoading(true);
+    e.preventDefault();
 
-  //const getUser s= () => {
-  //  api
-  //    .get("/api/users/view/")
-  //    .then((res) => res.data)
-  //    .then((data) => {
-  //      setNotes(data);
-  //      console.log(data);
-  //    })
-  //    .catch((err) => alert(err));
-  //};
+    try {
 
-  //const deleteUser = (id) => {
-  //  api
-  //    .delete(`/api/users/delete/${id}/`)
-  //    .then((res) => {
-  //      if (res.status === 204) alert("User deleted");
-  //      else alert("Failed to delete user.");
-  //      getNotes();
-  //    })
-  //    .catch((error) => alert(error));
-  //};
+      let search = '';
+      let flag = false;
+      if ((name2 != null) && (name2!=='')){
+        search = search+"?name="+name2;
+        flag = true;
+      }
+      if ((email2 != null) && (email2!=='')){
+        if (flag){
+          search = search+"&email="+email2;
+        } else {
+          search = search+"?email="+email2;
+          flag = true;
+        }
+      }
+      if ((id2 != null) && (id2!=='')){
+        if (flag){
+          search = search+"&id="+id2;
+        } else {
+          search = search+"?id="+id2;
+          flag = true;
+        }
+      }
+      if ((role2 != null) && (role2!=='')){
+        if (flag){
+          search = search+"&role="+role2;
+        } else {
+          search = search+"?role="+role2;
+          flag = true;
+        }
+      }
 
-  //const createUser = (e) => {
-  //  e.preventDefault();
-  //  api
-  //    .post("/api/register/user/", { first_name, last_name, email, role })
-  //    .then((res) => {
-  //      if (res.status === 201) alert("User created!");
-  //      else alert("Failed to create user.");
-  //      getNotes();
-  //    })
-  //    .catch((err) => alert(err));
-  //};
+      api
+          .get(api_searchUser+search)
+          .then((res) => res.data)
+          .then((data) => {
+            setUsersFound(data);
+            console.log(data);
+          })
+          .catch((err) => alert(err));
+
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteUser = (id) => {
+    api
+        .delete(api_deleteuser+`${id}/`)
+        .then((res) => {
+          if (res.status === 204) alert("User deleted!");
+          else alert("Failed to delete user.");
+          handleUserSearch();
+        })
+        .catch((error) => alert(error));
+  };
+
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -180,64 +228,78 @@ const ManageUsers = () => {
       <div className="flex mx-8 my-1">
         <div>
           <h2 className="mt-1">
-            Search by First Name
+            Search by Name
           </h2>
           <h2 className="mt-1">
-            Search by Last Name
+            Search by Email
           </h2>
           <h2 className="mt-1">
             Search by User ID
           </h2>
           <h2 className="mt-1">
-            Search by User Role
+            Search by Role
           </h2>
         </div>
         <div>
-          <form onSubmit="" className="mx-4 border-black border-2" >
-            <input
-              type="text"
-              name="User Search"
 
-            />
-          </form>
-          <form onSubmit="" className="mx-4 border-black border-2" >
+          <form onSubmit={handleUserSearch} className="mx-4 border-black border-2">
             <input
-              type="text"
-              name="User Search"
-
+                type="text"
+                name="User Search"
+                value={name2}
+                onChange={(e) => setName2(e.target.value)}
+                placeholder="Name"
+                className="w-full p-2 border-4 border-black rounded-xl"
             />
-          </form>
-          <form onSubmit="" className="mx-4 border-black border-2" >
             <input
-              type="text"
-              name="User Search"
-
+                type="text"
+                name="User Search1"
+                value={email2}
+                onChange={(e) => setEmail2(e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border-4 border-black rounded-xl"
             />
-          </form>
-          <form onSubmit="" className="mx-4 border-black border-2" >
             <input
-              type="text"
-              name="User Search"
-
+                type="text"
+                name="User Search2"
+                value={id2}
+                onChange={(e) => setId2(e.target.value)}
+                placeholder="ID"
+                className="w-full p-2 border-4 border-black rounded-xl"
             />
+            <select
+                name="role"
+                value={role2}
+                onChange={(e) => setRole2(e.target.value)}
+                className="w-full p-2 border-4 border-black rounded-xl"
+            >
+              <option value="" disabled>Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="member">Member</option>
+              <option value="worker">Worker</option>
+              <option value=''>None</option>
+            </select>
+            {loading && <LoadingIndicator/>}
+            <button className="myform-button font-bold" type="submit">
+              Search my user(s)
+            </button>
           </form>
 
         </div>
       </div>
 
 
-
-
       <div className="mx-8 flex flex-row items-start justify-center space-x-16">
         <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
-          {users.length > 0 ? (
-            users.map((user) => (
+          {usersFound.length > 0 ? (
+            usersFound.map((user) => (
               <div key={user.id}>
-                <UserPanel user={user} onEditClick={() => openEditForm(user)} />
+                <UserPanel user={user} onEditClick={() => openEditForm(user)} onDelete={deleteUser} key={user.id} />
               </div>))
           ) : (<p className="text-center text-black font-bold">No users in the system</p>
           )}
         </div>
+
         <div className="border-8 border-black p-6 rounded shadow-lg w-80 text-center bg-orange-200">
           <h3 className="text-xl font-bold mb-4">Add User</h3>
           <form onSubmit={handleSubmitUser} className="space-y-4">
