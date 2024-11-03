@@ -198,11 +198,11 @@ class CreateUserAdminView(generics.CreateAPIView):
 
 
 class UserFromAdminView(generics.CreateAPIView):
+    serializer_class = UserFromAdminSerl
     authentication_classes = [JWTAuthentication,
                               SessionAuthentication,
                               BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = UserFromAdminSerl
 
     def perform_create(self, serializer):
         admin_id = self.request.user.id
