@@ -94,6 +94,26 @@ class UserSearchViewMultiple(generics.ListAPIView):
         return query_set.filter(**filters)
 
 
+class UserGetiew(generics.RetrieveAPIView):
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = PersonSerializer
+
+    def get_object(self):
+        # Retrieve the email parameter
+        email = self.request.query_params.get('email', None)
+
+        if email is None:
+            raise ValidationError('Email is required')
+
+        try:
+            return Person.objects.get(email__iexact=email)
+        except Person.DoesNotExist:
+            raise ValidationError('Person with this email does not exist')
+
+
 class UserDeleteView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication,
                               SessionAuthentication,
@@ -115,17 +135,17 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
-    def RandomString(self,n):
+    def RandomString(self, n):
         chars = string.ascii_letters + string.digits
         return "".join(random.choice(chars) for _ in range(n))
 
-    def perform_create(self,serializer):
+    def perform_create(self, serializer):
         role = self.request.data.get('role')
         email = self.request.data.get('email')
         name = self.request.data.get('first_name')
         admin = self.request.user
 
-        temp_username = "Tempuser-"+str(name)+"-"+str(email)+"-"+str(role)
+        temp_username = "Tempuser-" + str(name) + "-" + str(email) + "-" + str(role)
         random_pass = self.RandomString(20)
         random_int = random.randint(0, 99999)
 
@@ -133,7 +153,8 @@ class CreateUserView(generics.CreateAPIView):
         #user = serializer.save(username=temp_username,role=role,email=email)
         Admin.create_person(self, username=temp_username, name=name, role=role, email=email)
 
-        user = serializer.save(username=temp_username,password=random_pass,role=role,email=email,person_id=random_int)
+        user = serializer.save(username=temp_username, password=random_pass, role=role, email=email,
+                               person_id=random_int)
         user.recreational_venue.add(*admin.recreational_venue.all())
         return user
 
