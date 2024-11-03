@@ -156,38 +156,6 @@ class UserFromAdminBatchSerl(serializers.ModelSerializer):
         model = Person
         fields = ["role", "excel_link"]
 
-    '''def create(self, validated_data):
-
-        role = validated_data.pop("role")
-        excel_file = validated_data.pop('excel_link')
-
-        file_path = excel_file
-        #df = pd.read_excel(file_path)
-        df = pd.read_excel(file_path, engine='openpyxl')
-        done_isd = []
-
-        try:
-            for index, row in df.iterrows():
-                name = row['name']
-                email = row['email']
-
-                data = {
-                    "first_name": name,
-                    "email": email,
-                    "role": role,
-                    "recreational_venue_id": None
-                }
-                done_isd.append(send_post_request_createBatch(data))
-
-        except Exception as e:
-            for idi in done_isd:
-                instance = Person.objects.get(pk=idi)
-                instance.delete()
-            raise AttributeError({"message": "Due to error: "+str(e)+"\nUsers "
-                                    "created were rolled back: "+str(done_isd)})
-
-        return {"message": "Users Successfully Created"}'''
-
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

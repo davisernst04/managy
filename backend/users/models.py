@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models import Q
+from api.models import Events,Amenity
+
 
 from .utils import RandomString
 
@@ -52,6 +54,7 @@ class Person(AbstractUser):
     def getId(self):
         return self.id
 
+    #def delete(self):
     #def updateInfo(self):
 
 
@@ -68,22 +71,18 @@ class Member(Person):
         return f"{self.first_name} {self.last_name} ({self.role})"
 
     def getAmenity(self, id):
-        from api.models import Amenity
         try:
             amenity = Amenity.objects.get(id=id)
             return amenity
-        except self.models.DoesNotExist:
-            ValueError("Error Amenity doesn't exist")
+        except Exception as e:
+            ValueError("Error Amenity doesn't exist: "+str(e))
             return None
+    def getEventList(cls):
+        return Events.objects.all()
 
-    def getEventList(self):
-        from api.models import Event
-        return Event.objects.all()
-
-    def getEvent(self, id):
-        from api.models import Event
+    def getEvent(self,id):
         try:
-            event = Event.objects.get(id=id)
+            event=Events.objects.get(id=id)
             return event
         except self.models.DoesNotExist:
             ValueError("Error Amenity doesn't exist")
@@ -102,12 +101,11 @@ class Worker(Person):
         extra_fields.setdefault('password', RandomString(20))
         return cls.objects.create_user(**extra_fields)
 
-    def viewEvents(self):
-        from api.models import Event
-        return Event.objects.all()
+    @classmethod
+    def viewEvents(cls):
+        return Events.objects.all()
 
-    def getAmenity(self, id):
-        from api.models import Amenity
+    def getAmenity(self,id):
         try:
             amenity = Amenity.objects.get(id=id)
             return amenity

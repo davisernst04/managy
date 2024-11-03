@@ -1,3 +1,6 @@
+import string
+
+from api.models import RecreationalVenue
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
@@ -20,6 +23,7 @@ from .requests import send_post_request_createBatch
 from data.email_helpers import send_token_password
 
 import pandas as pd
+import random
 
 
 class UserListView(generics.ListAPIView):
@@ -111,14 +115,27 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
-    def perform_create(self, serializer):
+    def RandomString(self,n):
+        chars = string.ascii_letters + string.digits
+        return "".join(random.choice(chars) for _ in range(n))
+
+    def perform_create(self,serializer):
         role = self.request.data.get('role')
         email = self.request.data.get('email')
         name = self.request.data.get('first_name')
+        admin = self.request.user
+
+        temp_username = "Tempuser-"+str(name)+"-"+str(email)+"-"+str(role)
+        random_pass = self.RandomString(20)
+        random_int = random.randint(0, 99999)
 
         temp_username = f"temp_user_{email.split('@')[0]}"
         #user = serializer.save(username=temp_username,role=role,email=email)
         Admin.create_person(self, username=temp_username, name=name, role=role, email=email)
+
+        user = serializer.save(username=temp_username,password=random_pass,role=role,email=email,person_id=random_int)
+        user.recreational_venue.add(*admin.recreational_venue.all())
+        return user
 
 
 class CreateUserWorkerView(generics.CreateAPIView):

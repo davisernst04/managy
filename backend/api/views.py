@@ -16,6 +16,7 @@ from datetime import date
 from django.views.generic.edit import DeleteView
 from rest_framework.response import Response
 from rest_framework import status
+from users.models import Worker
 
 from data.utils import RandString
 from data import gcp
