@@ -279,7 +279,7 @@ const ManageUsers = () => {
 
 
       <div className="mx-8 flex flex-row items-start justify-center space-x-16">
-        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4">
+        <div className="border-8 bg-orange-200 border-black rounded w-full flex-grow p-4 mb-4">
           {usersFound.length > 0 ? (
             usersFound.map((user) => (
               <div key={user.id}>
