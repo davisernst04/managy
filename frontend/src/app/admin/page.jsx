@@ -73,4 +73,4 @@ const Admin = () => {
 
 
 //export default withAuth(Admin); ––use when implementing API
-export default withAuth(Admin, "admin");
+export default withAuth(Admin, ["admin"]);

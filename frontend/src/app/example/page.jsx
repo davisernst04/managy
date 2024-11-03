@@ -86,4 +86,4 @@ function Notes() {
   );
 }
 
-export default withAuth(Notes, "");
+export default withAuth(Notes, []);
