@@ -8,7 +8,7 @@ import api from "@/api";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { generateRandomString } from '@/utils/tools';
 
-const api_creareUsrAdmin = "/users/admin/createuser/";
+const api_createUsrAdmin = "/users/admin/createuser/";
 const api_excel = "/api/excel/";
 const routeCreateBatch = "/user/admin/createuserbatch/";
 
@@ -106,17 +106,23 @@ const ManageUsers = () => {
 
     try {
 
-      const formData = new FormData();
-      formData.append('first_name', firstName1+" "+lastName1);
-      formData.append('email', email1);
-      formData.append('role', role1);
-      formData.append('recreational_venue_id', null);
-      console.log(Array.from(formData.keys()));
-      console.log(Array.from(formData.values()));
-      const res = await api.post(api_creareUsrAdmin, formData);
-      console.log(res.data);
+      let data1 = {
+        'first_name': firstName1+" "+lastName1,
+        'email': email1,
+        'role': role1,
+        'recreational_venue_id': null
+      }
+      console.log(data1);
+      api
+          .post(api_createUsrAdmin, data1)
+          .then((res) => {
+            if (res.status === 201){
+              console.log(res.data);
+              alert("User created with ID: "+res.data.id);
+            } else alert("Failed to make note.");
 
-      alert("User created with ID: "+res.data.id);
+          })
+          .catch((err) => alert(err));
 
     } catch (error) {
       alert(error);

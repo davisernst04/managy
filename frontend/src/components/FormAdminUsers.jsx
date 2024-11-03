@@ -1,6 +1,6 @@
 "use client";
 
-/*import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "@/api.js";
 import "@/styles/FormRegister.css";
 import LoadingIndicator from "./LoadingIndicator.jsx";
@@ -190,4 +190,3 @@ function FormAdminUsers({ routeCreate, routeCreateBatch }) {
 }
 
 export default FormAdminUsers;
-*/

@@ -4,15 +4,13 @@ import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
 /*import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss.js";*/
 
-const apiUrl = "https://managy-404252599785.us-central1.run.app";
-/*const apiUrl = "http://127.0.0.1:8000";*/
+/*const apiUrl = "https://managy-404252599785.us-central1.run.app";*/
+const apiUrl = "http://127.0.0.1:8000";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL
     ? process.env.NEXT_PUBLIC_API_URL
     : apiUrl,
-  /*baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : apiUrl,*/
-  /*baseURL: import.meta.env.VITE_API_URL*/
 });
 
 api.interceptors.request.use(
