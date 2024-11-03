@@ -7,6 +7,8 @@ import "@/styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator.jsx";
 import { navigate } from "./actions.js";
 
+let routeuserinfo = "/user/getinfo/";
+
 // eslint-disable-next-line react/prop-types
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
@@ -25,11 +27,33 @@ function Form({ route, method }) {
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-        navigate("/example");
+
+        routeuserinfo = routeuserinfo+`?email=${username}`
+          console.log(routeuserinfo);
+          const res2 = await api.get(routeuserinfo );
+          console.log(res2.data);
+
+        let role = res2.data.role; // Using dot notation to get the role
+// or if you prefer bracket notation, you can use: let role = res2.data['role'];
+
+        console.log("Role is: "+role);
+
+        if (role === "admin") {
+          navigate("/admin");
+        } else if (role === "member") {
+          navigate("/member");
+        } else if (role === "worker") {
+          navigate("/worker");
+        } else {
+          // If the role doesn't match any known roles, navigate to an example or default page
+          navigate("/example");
+        }
+
       } else {
         /*A registered user is redirected to login*/
         navigate("/login");
       }
+
     } catch (error) {
       alert(error);
     } finally {

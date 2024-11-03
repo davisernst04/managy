@@ -8,6 +8,8 @@ from api.models import RecreationalVenue
 
 from rest_framework.exceptions import ValidationError
 
+from data.email_helpers import send_user_welcome
+
 class PersonViewSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -144,6 +146,8 @@ class UserFromAdminSerl(serializers.ModelSerializer):
 
         user = Admin.create_person(**validated_data)
 
+        send_user_welcome(user.email, user.first_name, user.role, recreational_venue.name)
+
         user.recreational_venue.add(recreational_venue)
 
         return user
@@ -162,7 +166,7 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
 
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.RegexField(
-        regex=r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+        regex=r'^.{4,}$',
         write_only=True,
         error_messages={
             'invalid': ('Password must be at least 8 characters long with at least one capital letter and symbol')

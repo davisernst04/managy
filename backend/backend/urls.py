@@ -22,5 +22,6 @@ urlpatterns = [
     path("user/admin/createuserbatch/", userView.UserFromAdminBatchView.as_view(), name="create-users-batch"),
 
     path("user/resetpassword/", userView.RequestPasswordReset.as_view(), name="reset-password-token"),
-    path("user/changepassword/<slug:token>/", userView.ResetPassword.as_view(), name="reset-password")
+    path("user/changepassword/<slug:token>/", userView.ResetPassword.as_view(), name="reset-password"),
+    path("user/getinfo/", userView.UserGetiew.as_view(), name="get-user-info")
 ]
