@@ -45,7 +45,7 @@ function Form({ route, method }) {
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
+        placeholder="Email"
       />
       <input
         className="myform-input text-black"
