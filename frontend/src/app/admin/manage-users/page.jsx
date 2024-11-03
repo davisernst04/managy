@@ -53,14 +53,6 @@ const ManageUsers = () => {
     setShowEditForm(false);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
-  };
-
     const handleFileChange = (e) => {
         const file = e.target.files[0]; // Get the first selected file
         if (file) {
@@ -93,7 +85,7 @@ const ManageUsers = () => {
       const res1 = await api.post(routeCreateBatch, data1);
       console.log(res1.data);
 
-      alert(res1.data);
+      alert("Users Created successfully. Reload page to view them");
 
     } catch (error) {
       alert(error);
@@ -102,32 +94,35 @@ const ManageUsers = () => {
     }
   };
 
-
-  const handleSubmitUser = async (e) => {
-    setLoading(true);
+  const mycreateUser = (e) => {
     e.preventDefault();
 
+    let data1 = {
+      'first_name': firstName1 + " " + lastName1,
+      'email': email1,
+      'role': role1,
+      'recreational_venue_id': null
+    }
+    console.log(data1);
+
+    api
+        .post(api_createUsrAdmin, data1)
+        .then((res) => {
+          if (res.status === 201){
+            console.log(res.data);
+            alert("User created with ID: "+res.data.id+"\nClick on search to view them");
+          } else alert("Failed to make note.");
+
+        })
+        .catch((err) => alert("Error ", err));
+  };
+
+  const handleSubmitUser = (e) => {
+    setLoading(true);
+    e.preventDefault();
     try {
-
-      let data1 = {
-        'first_name': firstName1 + " " + lastName1,
-        'email': email1,
-        'role': role1,
-        'recreational_venue_id': null
-      }
-      console.log(data1);
-      api
-          .post(api_createUsrAdmin, data1)
-          .then((res) => {
-            if (res.status === 201){
-              console.log(res.data);
-              alert("User created with ID: "+res.data.id);
-            } else alert("Failed to make note.");
-
-          })
-          .catch((err) => alert(err));
-
-      handleUserSearch();
+      mycreateUser(e);
+      handleUserSearchBegin();
 
     } catch (error) {
       alert(error);
@@ -218,9 +213,9 @@ const ManageUsers = () => {
         .then((res) => {
           if (res.status === 204) alert("User deleted!");
           else alert("Failed to delete user.");
-          handleUserSearch();
         })
         .catch((error) => alert(error));
+    window.location.reload();
   };
 
 
