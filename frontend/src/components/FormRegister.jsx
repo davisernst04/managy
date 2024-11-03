@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "@/api.js";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants.js";
 import "@/styles/FormRegister.css";
@@ -10,7 +10,7 @@ import { uploadToGCP } from "@/components/cloud_storage";
 
 require('dotenv').config();
 
-let store_api_url =
+let api_images = "/api/image/"
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -22,39 +22,41 @@ function FormRegister({ routeRecr, routeAdmin }) {
   const [addressRecr, setAddressRecr] = useState("");
   const [photoRecr, setPhotoRecr] = useState(null);
   const [photoRecrLink, setPhotoRecrLink] = useState("");
-  const [recrSent, setRecrCenter] = useState(false);
+  const [recrCenter, setRecrCenter] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [recreational_venue_id, setRecreational_venue_id] = useState(-1);
+  const [inputRecreationalVenueId, setInputRecreationalVenueId] = useState(recreational_venue_id)
+
   const [dob, setDob] = useState("");
   const [telephone, setTelephone] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [savedRecVnId, setSavedRecVnId] = useState("");
+  const [savedRecVnId, setSavedRecVnId] = useState(0);
 
+    useEffect(() => {
+        if (recreational_venue_id === -1 && savedRecVnId > 0) {
+            setRecreational_venue_id(savedRecVnId);
+        }
+    }, [savedRecVnId, recreational_venue_id]);
+
+    useEffect(() => {
+        setInputRecreationalVenueId(recreational_venue_id);
+    }, [recreational_venue_id]);
+
+      const handleRecreationalVenueIdChange = (e) => {
+        const value = parseInt(e.target.value, 10);
+        setRecreational_venue_id(value);
+      };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]; // Get the first selected file
         if (file) {
             setPhotoRecr(file);
-            // Now send the file to the server
-            const formData = new FormData();
-            formData.append('photo', file);
-
-            console.log("VAR:   "+ process.env.STORE_API_URL)
-
-            fetch(`${process.env.STORE_API_URL}/upload`, {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                })
-                .catch(error => console.error('Error:', error));
         }
     };
 
@@ -64,25 +66,27 @@ function FormRegister({ routeRecr, routeAdmin }) {
         /*Avoid submitting the data, first perform other tasks*/
 
         try {
-            console.log("TO GCP: "+`${photoRecr}`+" ** "+`recreational_venues/${nameRecr}`+" ** "+`photo_${getRandomInt(1,155555)}.xlsx`)
-            uploadToGCP(`${photoRecr.path}`, `recreational_venues/${nameRecr}`, `photo_${getRandomInt(1,155555)}.xlsx`, 1)
-                .then(link => {
-                        console.log('Uploading file to:', link);
-                        setPhotoRecrLink(link);
-                    }
-                )
-                .catch(error => {
-                    console.error('Error uploading file:', error);
-                    alert(`Error uploading file: ${error.message}`);
-                });
 
-            const res = await api.post(routeRecr, {
-                "name": nameRecr,
-                "address": addressRecr,
-                "photo": photoRecrLink
-            });
+            const formData = new FormData();
+            formData.append('image', photoRecr);
+            formData.append('title', nameRecr);
+            console.log(Array.from(formData.keys()));
+            console.log(Array.from(formData.values()));
+            const res = await api.post(api_images, formData);
+            console.log(res.data);
+            setPhotoRecrLink(res.data.url);
 
-            setSavedRecVnId(res.data.id)
+            const formData2 = new FormData();
+            formData2.append('name', nameRecr);
+            formData2.append('address', addressRecr);
+            formData2.append('photo', res.data.url);
+            console.log(Array.from(formData2.keys()));
+            console.log(Array.from(formData2.values()));
+            const res1 = await api.post(routeRecr, formData2);
+            console.log(res1.data);
+            setSavedRecVnId(res1.data.id)
+
+            alert("The ID of the recreational venue is: "+res1.data.id);
 
         } catch (error) {
             alert(error);
@@ -100,7 +104,7 @@ function FormRegister({ routeRecr, routeAdmin }) {
 
     try {
 
-        if (recrSent === false){
+        if (recrCenter === false){
             if ((recreational_venue_id == null) || (recreational_venue_id <= -1)){
                 throw new Error("A recreational venue was not created or a " +
                     "valid ID number was not given");
@@ -127,15 +131,10 @@ function FormRegister({ routeRecr, routeAdmin }) {
         }
         console.log("!!!!!!Data: ", data1);
 
-      const res = await api.post(routeAdmin, {
-          "first_name": name,
-          "email": email,
-          "password": password,
-          "recreational_venue_id": recreational_venue_id,
-          "dob": dob,
-          "telephone": telephone,
-          "address": address
-      });
+      const res = await api.post(routeAdmin, data1);
+      console.log(res.data);
+      console.log(res.status);
+
       /*A registered user is redirected to login*/
         alert("Welcome! You can now log in with your credentials email and password");
       navigate("/login");
@@ -206,9 +205,9 @@ function FormRegister({ routeRecr, routeAdmin }) {
               <input
                   className="myform-input text-black"
                   type="number"
-                  value={recreational_venue_id}
+                  value={inputRecreationalVenueId}
                   min="0"
-                  onChange={(e) => setRecreational_venue_id(e.target.value)}
+                  onChange={handleRecreationalVenueIdChange}
                   placeholder="Recreational venue ID"
               />
               <p className="text-black text-left">Date of Birth</p>

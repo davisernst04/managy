@@ -3,6 +3,7 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import UserSerializer, NoteSerializer, AmenitySerializer
 from .serializers import EventSerializer, BookingAmenitySerializer, BookingAmenitySerializerView, EventSelectionSerializer, EventSelectionSerializerView, EventSelectionSerializerUpdate, RecreationalVenueSerializer
@@ -25,7 +26,9 @@ from PIL import Image
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -41,7 +44,9 @@ class NoteListCreate(generics.ListCreateAPIView):
 
 class NoteDelete(generics.DestroyAPIView):
     serializer_class = NoteSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -50,7 +55,9 @@ class NoteDelete(generics.DestroyAPIView):
 
 class AmenityCreate(generics.CreateAPIView):
     serializer_class = AmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
     def get_queryset(self):
@@ -65,7 +72,9 @@ class AmenityCreate(generics.CreateAPIView):
 
 class AmenityUpdate(generics.RetrieveUpdateAPIView):
     serializer_class = AmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
     def get_queryset(self):
@@ -81,7 +90,9 @@ class AmenityUpdate(generics.RetrieveUpdateAPIView):
 
 class AmenityList(generics.ListAPIView):
     serializer_class = AmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -92,7 +103,9 @@ class AmenityList(generics.ListAPIView):
 
 class AmenityDelete(generics.RetrieveDestroyAPIView):
     serializer_class = AmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
     queryset = Amenity.objects.all()
 
@@ -104,7 +117,9 @@ class AmenityDelete(generics.RetrieveDestroyAPIView):
 # Events
 class EventCreate(generics.CreateAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
     def perform_create(self, serializer):
@@ -115,7 +130,9 @@ class EventCreate(generics.CreateAPIView):
 
 class EventList(generics.ListAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -123,7 +140,9 @@ class EventList(generics.ListAPIView):
 
 class EventUpdate(generics.RetrieveUpdateAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated,IsWorker]
 
     def get_queryset(self):
@@ -136,7 +155,9 @@ class EventUpdate(generics.RetrieveUpdateAPIView):
 
 class EventDelete(generics.RetrieveDestroyAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
     def get_queryset(self):
@@ -147,7 +168,9 @@ class EventDelete(generics.RetrieveDestroyAPIView):
 
 class getEventName(generics.ListAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -156,7 +179,9 @@ class getEventName(generics.ListAPIView):
 
 class sortingEvents(generics.ListAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -174,7 +199,9 @@ class sortingEvents(generics.ListAPIView):
 
 class searchEvents(generics.ListAPIView):
     serializer_class = EventSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -184,7 +211,9 @@ class searchEvents(generics.ListAPIView):
 
 class sortingAmeneties(generics.ListAPIView):
     serializer_class = AmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -202,7 +231,9 @@ class sortingAmeneties(generics.ListAPIView):
 
 class createBooking(generics.CreateAPIView):
     serializer_class = BookingAmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
     def get_serializer_context(self):
@@ -216,7 +247,9 @@ class createBooking(generics.CreateAPIView):
 
 class getBooking(generics.ListAPIView):
     serializer_class = BookingAmenitySerializerView
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
     def get_queryset(self):
@@ -226,7 +259,9 @@ class getBooking(generics.ListAPIView):
 
 class cancelBooking(generics.RetrieveDestroyAPIView):
     serializer_class = BookingAmenitySerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
     def get_serializer_context(self):
@@ -242,7 +277,9 @@ class cancelBooking(generics.RetrieveDestroyAPIView):
 
 class EventSelectionCreate(generics.CreateAPIView):
     serializer_class = EventSelectionSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsWorker]
 
     def perform_create(self, serializer):
@@ -251,7 +288,9 @@ class EventSelectionCreate(generics.CreateAPIView):
 
 class EventSelectionView(generics.ListAPIView):
     serializer_class = EventSelectionSerializerView
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -266,7 +305,9 @@ class EventSelectionView(generics.ListAPIView):
 
 class EventSelectionRegister(generics.RetrieveUpdateAPIView):
     serializer_class = EventSelectionSerializerUpdate
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
     def get_serializer_context(self):
@@ -285,7 +326,9 @@ class EventSelectionRegister(generics.RetrieveUpdateAPIView):
 
 class EventSelectionCancel(generics.RetrieveUpdateAPIView):
     serializer_class = EventSelectionSerializerUpdate
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsMember]
 
     def get_serializer_context(self):
