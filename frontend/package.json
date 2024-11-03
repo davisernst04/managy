@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "js-datepicker": "^5.18.3",
     "jwt-decode": "^4.0.0",
     "next": "15.0.0",
-    "react": "19.0.0-rc-65a56d0e-20241020",
+    "react": "^18.3.1",
+    "react-datepicker": "^7.5.0",
     "react-dom": "19.0.0-rc-65a56d0e-20241020"
   },
   "devDependencies": {
