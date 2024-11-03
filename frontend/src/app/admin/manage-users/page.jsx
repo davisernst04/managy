@@ -215,7 +215,6 @@ const ManageUsers = () => {
           else alert("Failed to delete user.");
         })
         .catch((error) => alert(error));
-    window.location.reload();
   };
 
 
