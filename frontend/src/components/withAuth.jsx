@@ -7,7 +7,7 @@ import { isAuthorized } from "./ProtectedRoute.jsx";
 import { navigate } from "./actions.js";
 import { ROLE } from "@/constants";
 
-/*Options for role are "admin", "member", "worker"*/
+/*Options for role are "admin", "member", "worker". And "" allow any authenticated user*/
 export const withAuth = (WrappedComponent, role) => {
   return function WithAuth(props) {
     const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +37,10 @@ export const withAuth = (WrappedComponent, role) => {
       alert("User is no authenticated");
       navigate("/login");
       return null; // No need to render the component if not authorized
+    }
+
+    if (role === "") {
+      return <WrappedComponent {...props} />;
     }
 
     const cur_role = localStorage.getItem(ROLE);
