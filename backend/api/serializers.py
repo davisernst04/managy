@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Note, Amenity, Events, BookingAmenity, EventSelection, RecreationalVenue
+from .models import Image,ExcelFile
 from users.models import Member
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "password"]
         # No one can read the password
         extra_kwargs = {"password": {"write_only": True}}
+
     def create(self, validated_data):
         print(validated_data)
         user = User.objects.create_user(**validated_data)
@@ -26,13 +29,14 @@ class AmenitySerializer(serializers.ModelSerializer):
     #name = serializers.CharField(max_length=50)
     #description = serializers.CharField()
     #capacity = serializers.IntegerField(default=1, validators=[MinValueValidator(1)])
-    occupied = serializers.BooleanField(default=False,read_only=True)
+    occupied = serializers.BooleanField(default=False, read_only=True)
     member_user = serializers.CharField(read_only=True)
+
     #image = serializers.CharField()
     class Meta:
         model = Amenity
         fields = ["id", "name", "description", "capacity", "occupied", "image", "member_user", "created_at", "author"]
-        extra_kwargs = {"author": {"read_only": True},"member_user": {"read_only": True}}
+        extra_kwargs = {"author": {"read_only": True}, "member_user": {"read_only": True}}
 
     def update_amenity(self, instance, validated_data):
         member_user = validated_data.get('member_user', instance.member_user)
@@ -48,10 +52,12 @@ class AmenitySerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ["id", "eventName", "eventDescription", "eventLocation","eventCapacity", "eventTime", "eventDate", "created_at", "author"]
+        fields = ["id", "eventName", "eventDescription", "eventLocation", "eventCapacity", "eventTime", "eventDate",
+                  "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
 
 
@@ -64,9 +70,9 @@ class BookingAmenitySerializer(serializers.ModelSerializer):
     def validate_amenities(self, value):
         member = self.context['request'].user
         if (self.context.get('action') == 'register'):
-            if (not(value.canRegister())):
+            if (not (value.canRegister())):
                 raise serializers.ValidationError("This amenity is already occupied.")
-        elif(self.context.get('action') == 'cancel'):
+        elif (self.context.get('action') == 'cancel'):
             if (value.member_user != member.name):
                 raise serializers.ValidationError("This not your booking")
         return value
@@ -84,14 +90,14 @@ class BookingAmenitySerializer(serializers.ModelSerializer):
         )
         booking_amenity.save()
         amenity_serial = AmenitySerializer()
-        amenity_serial.update_amenity(amenity, {'member_user': str(booking_amenity.author),'occupied':True})
+        amenity_serial.update_amenity(amenity, {'member_user': str(booking_amenity.author), 'occupied': True})
         return booking_amenity
 
-    def delete(self,instance):
+    def delete(self, instance):
         print("Deleting right now")
         amenity = instance.amenities
         amenity_serial = AmenitySerializer()
-        amenity_serial.update_amenity(amenity,{'member_user': "", 'occupied':False})
+        amenity_serial.update_amenity(amenity, {'member_user': "", 'occupied': False})
         instance.delete()
 
 
@@ -100,11 +106,13 @@ class BookingAmenitySerializerView(serializers.ModelSerializer):
         model = BookingAmenity
         fields = ['amenity_name', 'duration_booked', 'amenity_details', 'amenity_capacity', 'amenity_id', 'id']
 
+
 class EventSelectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventSelection
         fields = ['eventRef', 'created_at', 'author', 'id']
-        extra_kwargs = {"author": {"read_only": True}, "numRegistered": {"read_only": True}, "membersRegistered": {"read_only": True}}
+        extra_kwargs = {"author": {"read_only": True}, "numRegistered": {"read_only": True},
+                        "membersRegistered": {"read_only": True}}
 
     def create(self, validated_data):
         events = validated_data.pop('eventRef', None)
@@ -122,12 +130,11 @@ class EventSelectionSerializer(serializers.ModelSerializer):
         return eventSelection
 
 
-
 class EventSelectionSerializerUpdate(serializers.ModelSerializer):
     class Meta:
         model = EventSelection
         fields = ['numRegistered', 'membersRegistered']
-        extra_kwargs = {"numRegistered": {"read_only": True}, "membersRegistered":{"read_only": True}}
+        extra_kwargs = {"numRegistered": {"read_only": True}, "membersRegistered": {"read_only": True}}
 
     def validate(self, value):
         member = self.context['request'].user
@@ -136,7 +143,7 @@ class EventSelectionSerializerUpdate(serializers.ModelSerializer):
             if event_selection.membersRegistered.filter(id=member.id).exists():
                 raise serializers.ValidationError("You are already registered for this event.")
         elif (self.context.get('action') == 'cancel'):
-            if not(event_selection.membersRegistered.filter(id=member.id).exists()):
+            if not (event_selection.membersRegistered.filter(id=member.id).exists()):
                 raise serializers.ValidationError("You are not registered for this event.")
         return value
 
@@ -149,23 +156,49 @@ class EventSelectionSerializerUpdate(serializers.ModelSerializer):
         print("Test")
 
         if (self.context.get('action') == 'register'):
-            if member and not(instance.isFull()):
+            if member and not (instance.isFull()):
                 instance.membersRegistered.add(member)
                 instance.numRegistered += 1
         elif self.context.get('action') == 'cancel':
-            if member and not(instance.isFull()):
+            if member and not (instance.isFull()):
                 instance.membersRegistered.remove(member)
                 instance.numRegistered -= 1
         instance.save()
         return instance
 
+
 class EventSelectionSerializerView(serializers.ModelSerializer):
     class Meta:
         model = EventSelection
-        fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id', 'author']
+        fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id',
+                  'author']
 
 
 class RecreationalVenueSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecreationalVenue
         fields = '__all__'
+
+
+class ImageUploadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = ['image', 'title', 'url']
+        extra_kwargs = {
+            "url": {"read_only": True},
+            "image": {"write_only": True},
+            "title": {"write_only": True}
+        }
+
+
+class ExcelUploadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExcelFile
+        fields = ['file', 'title', 'url']
+        extra_kwargs = {
+            "url": {"read_only": True},
+            "file": {"write_only": True},
+            "title": {"write_only": True}
+        }

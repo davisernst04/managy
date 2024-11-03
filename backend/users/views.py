@@ -1,8 +1,8 @@
-#import string
 import string
 
 from api.models import RecreationalVenue
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import PersonSerializer, WorkerSerializer, MemberSerializer, AdminSerializer
 from .serializers import UserFromAdminSerl, UserFromAdminBatchSerl
 from .serializers import ResetPasswordRequestSerializer, ResetPasswordSerializer
@@ -27,7 +27,9 @@ import random
 
 
 class UserListView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
@@ -39,7 +41,9 @@ class UserListView(generics.ListAPIView):
 
 
 class UserSearchView(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
@@ -52,7 +56,9 @@ class UserSearchView(generics.ListAPIView):
 
 
 class UserSearchViewMultiple(generics.ListAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
@@ -89,7 +95,9 @@ class UserSearchViewMultiple(generics.ListAPIView):
 
 
 class UserDeleteView(generics.DestroyAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
@@ -101,7 +109,9 @@ class UserDeleteView(generics.DestroyAPIView):
 
 
 class CreateUserView(generics.CreateAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = PersonSerializer
 
@@ -160,9 +170,6 @@ class CreateUserAdminView(generics.CreateAPIView):
         try:
             recreational_venue = RecreationalVenue.objects.get(id=recreational_id)
             admin = serializer.save()
-            recreational_venue=RecreationalVenue.objects.get(id=recreational_id)
-            random_int = random.randint(0, 99999)
-            admin = serializer.save(person_id=random_int)
             admin.recreational_venue.add(recreational_venue)
         except RecreationalVenue.DoesNotExist:
             raise ValidationError("Recreational venue doesn't exist")
@@ -170,7 +177,9 @@ class CreateUserAdminView(generics.CreateAPIView):
 
 
 class UserFromAdminView(generics.CreateAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserFromAdminSerl
 
@@ -181,7 +190,9 @@ class UserFromAdminView(generics.CreateAPIView):
 
 class DelUserFromAdminView(generics.DestroyAPIView):
     queryset = Person.objects.all()
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserFromAdminSerl
 
@@ -191,14 +202,16 @@ class DelUserFromAdminView(generics.DestroyAPIView):
             self.perform_destroy(instance)  # Call the method to delete the instance
             return Response({"message": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
-            return Response({"error": "User not found + "+str(e)}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found + " + str(e)}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_destroy(self, instance):
         instance.delete()
 
 
 class UserFromAdminBatchView(generics.CreateAPIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
     serializer_class = UserFromAdminBatchSerl
 
@@ -247,7 +260,6 @@ class UserFromAdminBatchView(generics.CreateAPIView):
         return {"message": "Users Successfully Created"}'''
 
 
-
 class RequestPasswordReset(generics.GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = ResetPasswordRequestSerializer
@@ -292,7 +304,7 @@ class ResetPassword(generics.GenericAPIView):
         reset_obj = PasswordReset.objects.filter(token=token).first()
 
         if not reset_obj:
-            return Response({'error':'Invalid token'}, status=400)
+            return Response({'error': 'Invalid token'}, status=400)
 
         person = Person.objects.filter(email=reset_obj.email).first()
 
@@ -302,6 +314,6 @@ class ResetPassword(generics.GenericAPIView):
 
             reset_obj.delete()
 
-            return Response({'success':'Password updated'})
+            return Response({'success': 'Password updated'})
         else:
-            return Response({'error':'No user found'}, status=404)
+            return Response({'error': 'No user found'}, status=404)
