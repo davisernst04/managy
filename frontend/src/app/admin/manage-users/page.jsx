@@ -29,10 +29,9 @@ const ManageUsers = () => {
   const [usersFound, setUsersFound] = useState([]);
 
 
-  const [role3, setRole3] = useState(null);
-  const [excellink, setExcellink] = useState(null);
-
+  const [role3, setRole3] = useState("");
   const [excelFile, setExcelFile] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,33 +61,39 @@ const ManageUsers = () => {
     }));
   };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0]; // Get the first selected file
+        if (file) {
+            setExcelFile(file);
+        }
+    };
+
+
   const handleSubmitBatch = async (e) => {
     setLoading(true);
     e.preventDefault();
+    /*Avoid submitting the data, first perform other tasks*/
 
     try {
 
-      /*Get Link*/
+      let cur_name = generateRandomString(10)+".xlsx";
       const formData = new FormData();
       formData.append('file', excelFile);
-      formData.append('title', generateRandomString(10));
+      formData.append('title', cur_name);
       console.log(Array.from(formData.keys()));
       console.log(Array.from(formData.values()));
-      const res0 = await api.post(api_excel, formData);
-      console.log(res0.data);
-      setExcellink(res0.data.url);
-
+      const res = await api.post(api_excel, formData);
+      console.log(res.data);
 
       let data1 = {
         "role": role3,
-        "excel_link": res0.data.url
+        "excel_link": res.data.url
       }
       console.log("!!!!!!Data: ", data1);
-      const res = await api.post(routeCreateBatch, data1);
-      console.log(res.data);
-      console.log(res.status);
+      const res1 = await api.post(routeCreateBatch, data1);
+      console.log(res1.data);
 
-      alert("Users Created");
+      alert(res1.data);
 
     } catch (error) {
       alert(error);
@@ -96,6 +101,7 @@ const ManageUsers = () => {
       setLoading(false);
     }
   };
+
 
   const handleSubmitUser = async (e) => {
     setLoading(true);
@@ -132,7 +138,7 @@ const ManageUsers = () => {
 
 
 
-  const handleUserSearchBegin = async (e) => {
+  const handleUserSearchBegin = async () => {
     setLoading(true);
 
     try {
@@ -187,7 +193,6 @@ const ManageUsers = () => {
           search = search+"&role="+role2;
         } else {
           search = search+"?role="+role2;
-          flag = true;
         }
       }
 
@@ -304,96 +309,131 @@ const ManageUsers = () => {
           <h3 className="text-xl font-bold mb-4">Add User</h3>
           <form onSubmit={handleSubmitUser} className="space-y-4">
             <input
-              type="text"
-              name="first_name"
-              value={firstName1}
-              onChange={(e) => setFirstName1(e.target.value)}
-              placeholder="First Name"
-              className="w-full p-2 border-4 border-black rounded-xl"
-              required
+                type="text"
+                name="first_name"
+                value={firstName1}
+                onChange={(e) => setFirstName1(e.target.value)}
+                placeholder="First Name"
+                className="w-full p-2 border-4 border-black rounded-xl"
+                required
             />
             <input
-              type="text"
-              name="last_name"
-              value={lastName1}
-              onChange={(e) => setLastName1(e.target.value)}
-              placeholder="Last Name"
-              className="w-full p-2 border-4 border-black rounded-xl"
-              required
+                type="text"
+                name="last_name"
+                value={lastName1}
+                onChange={(e) => setLastName1(e.target.value)}
+                placeholder="Last Name"
+                className="w-full p-2 border-4 border-black rounded-xl"
+                required
             />
             <input
-              type="email"
-              name="email"
-              value={email1}
-              onChange={(e) => setEmail1(e.target.value)}
-              placeholder="Email"
-              className="w-full p-2 border-4 border-black rounded-xl"
-              required
+                type="email"
+                name="email"
+                value={email1}
+                onChange={(e) => setEmail1(e.target.value)}
+                placeholder="Email"
+                className="w-full p-2 border-4 border-black rounded-xl"
+                required
             />
             <select
-              name="role"
-              value={role1}
-              onChange={(e) => setRole1(e.target.value)}
-              className="w-full p-2 border-4 border-black rounded-xl"
-              required
+                name="role"
+                value={role1}
+                onChange={(e) => setRole1(e.target.value)}
+                className="w-full p-2 border-4 border-black rounded-xl"
+                required
             >
               <option value="" disabled>Select Role</option>
               <option value="admin">Admin</option>
               <option value="member">Member</option>
               <option value="worker">Worker</option>
             </select>
-            {loading && <LoadingIndicator />}
+            {loading && <LoadingIndicator/>}
             <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600"
+                type="submit"
+                className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600"
             >
               Add User
             </button>
           </form>
+          <form onSubmit={handleSubmitBatch} className="space-y-4">
+            <h3 className="text-xl font-bold mb-4"><br/>Add User - Batch</h3>
+            <p>Send users by Batch using an excel file(.xlsx). Take care of:</p>
+            <p>1. Users having the same role</p>
+            <p>2. First Column is name</p>
+            <p>3. Second Column is email</p>
+            <select
+                name="role"
+                value={role3}
+                onChange={(e) => setRole3(e.target.value)}
+                className="w-full p-2 border-4 border-black rounded-xl"
+                required
+            >
+              <option value="" disabled>Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="member">Member</option>
+              <option value="worker">Worker</option>
+            </select>
+            <input
+                className="myform-input text-black"
+                type="file"
+                accept=".xlsx" // This restricts the file picker to Excel files
+                onChange={handleFileChange}
+                placeholder="Excel File" // Update placeholder text to reflect the file type
+                required
+            />
+            {loading && <LoadingIndicator/>}
+            <button
+                type="submit"
+                className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600"
+            >
+              Add Users!
+            </button>
+          </form>
+
         </div>
       </div>
       {showEditForm && selectedUser && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-orange-200 p-6 rounded shadow-lg w-80 text-center border-black border-4">
-            <h3 className="text-xl font-bold mb-4">Edit User</h3>
-            <form className="space-y-4">
-              <input
-                type="text"
-                name="first_name"
-                value={selectedUser.first_name}
-                onChange={handleInputChange}
-                className="w-full p-2 rounded-xl border-4 border-black"
-              />
-              <input
-                type="text"
-                name="last_name"
-                value={selectedUser.last_name}
-                onChange={handleInputChange}
-                className="w-full p-2 border-4 rounded-xl border-black"
-              />
-              <input
-                type="email"
-                name="email"
-                value={selectedUser.email}
-                onChange={handleInputChange}
-                className="w-full p-2 border-4 rounded-xl border-black"
-              />
-              <input
-                type="text"
-                name="role"
-                value={selectedUser.role}
-                onChange={handleInputChange}
-                className="w-full p-2 border-4 rounded-xl border-black"
-              />
-              <div className="flex space-x-4 mt-4">
-                <button
-                  type="button"
-                  className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600 shadow-xl"
-                  onClick={closeEditForm}
-                >
-                  Save
-                </button>
-                <button
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-orange-200 p-6 rounded shadow-lg w-80 text-center border-black border-4">
+              <h3 className="text-xl font-bold mb-4">Edit User</h3>
+              <form className="space-y-4">
+                <input
+                    type="text"
+                    name="first_name"
+                    value={selectedUser.first_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 rounded-xl border-4 border-black"
+                />
+                <input
+                    type="text"
+                    name="last_name"
+                    value={selectedUser.last_name}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border-4 rounded-xl border-black"
+                />
+                <input
+                    type="email"
+                    name="email"
+                    value={selectedUser.email}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border-4 rounded-xl border-black"
+                />
+                <input
+                    type="text"
+                    name="role"
+                    value={selectedUser.role}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border-4 rounded-xl border-black"
+                />
+                <div className="flex space-x-4 mt-4">
+                  <button
+                      type="button"
+                      className="w-full bg-blue-500 text-white p-2 rounded-3xl hover:bg-blue-600 shadow-xl"
+                      onClick={closeEditForm}
+                  >
+                    Save
+                  </button>
+                  <button
                   type="button"
                   className="w-full bg-red-500 text-white p-2 rounded-3xl hover:bg-red-600 shadow-xl"
                   onClick={closeEditForm}
