@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import api from "@/api.js";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants.js";
+import {ACCESS_TOKEN, REFRESH_TOKEN, ROLE} from "@/constants.js";
 import "@/styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator.jsx";
 import { navigate } from "./actions.js";
@@ -33,9 +33,9 @@ function Form({ route, method }) {
           const res2 = await api.get(routeuserinfo );
           console.log(res2.data);
 
-        let role = res2.data.role; // Using dot notation to get the role
-// or if you prefer bracket notation, you can use: let role = res2.data['role'];
+        const role = res2.data.role; // Using dot notation to get the role
 
+        localStorage.setItem(ROLE, role);
         console.log("Role is: "+role);
 
         if (role === "admin") {

@@ -5,8 +5,10 @@ import { isAuthorized } from "./ProtectedRoute.jsx";
 
 /*import { useRouter } from 'next/navigation'*/
 import { navigate } from "./actions.js";
+import { ROLE } from "@/constants";
 
-export const withAuth = (WrappedComponent) => {
+/*Options for role are "admin", "member", "worker"*/
+export const withAuth = (WrappedComponent, role) => {
   return function WithAuth(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuth, setIsAuth] = useState(false);
@@ -32,7 +34,17 @@ export const withAuth = (WrappedComponent) => {
     }
 
     if (!isAuth) {
+      alert("User is no authenticated");
+      navigate("/login");
       return null; // No need to render the component if not authorized
+    }
+
+    const cur_role = localStorage.getItem(ROLE);
+    console.log("Role is "+cur_role);
+    if (cur_role !== role ){
+      alert("User has no permission to get this page");
+      navigate(`/${cur_role}`);
+      return null;
     }
 
     return <WrappedComponent {...props} />;
