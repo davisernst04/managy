@@ -3,7 +3,7 @@
 // as per Form.jsx
 import { useState } from "react";
 import api from "@/api.js";
-import "./createEvent.css";
+import "@/styles/createEvent.css";
 import LoadingIndicator from "@/components/LoadingIndicator.jsx";
 import { withAuth } from "@/components/withAuth.jsx";
 

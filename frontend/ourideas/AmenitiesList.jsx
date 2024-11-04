@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import api from "@/api";
-import "@/app/worker/amenities/createAmenity/createAmenity.css";
+import "@/styles/createAmenity.css";
 
 function AmenitiesList() {
     const [amenities, setAmenities] = useState([]);

@@ -2,7 +2,7 @@
 
 import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
-import './welcome.css';
+import '@/styles/welcome.css';
 
 function WelcomePage() {
     const handleEvent = async (e) => {

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import api from "@/api.js";
-import "./amenitiesPage.css";
+import "@/styles/amenitiesPage.css";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import Image from 'next/image';
 
 const api_all_amenities = "/api/amenity/view/";
 const api_sort_amenitiesName = "/api/amenity/get_amenity/";
@@ -34,7 +35,7 @@ export default function Page() {
 
     /*Sort by name*/
     const getAmenitiesName = () => {
-        console.log("Search Name: " + sortOption);
+        console.log("Sort Option: " + sortOption);
         api
             .get(api_sort_amenitiesName+`${sortOption}/`)
             .then((res) => res.data)
@@ -86,7 +87,13 @@ export default function Page() {
 
     return (
         <div className="amenities-container bg-white text-black">
-            <img src="/images/house.png" alt="Home Logo" className="amenities-logo" />
+            <Image
+                src="/images/house.png"
+                alt="Home Logo"
+                className="amenities-logo"
+                width={500}
+                height={300}
+            />
             <h2 className="amenities-title">Search Amenities</h2>
 
             {/* Sorting Controls */}
@@ -138,10 +145,13 @@ export default function Page() {
                         <h3>{amenity.name}</h3>
                         <p>Description: {amenity.description}</p>
                         <p>Capacity: {amenity.capacity}</p>
-                        <img
+                        <Image
                             src={amenity.image}
                             alt={`${amenity.name} image`}
-                            className="amenity-image w-full max-w-xs h-auto rounded-lg mt-2"
+                            layout="responsive" // Set layout to responsive
+                            width={1}  // Aspect ratio width (adjust as needed)
+                            height={1}  // Aspect ratio height (adjust as needed)
+                            className="amenity-image rounded-lg mt-2"
                         />
                     </div>
                 ))}
