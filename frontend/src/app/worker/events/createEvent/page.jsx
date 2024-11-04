@@ -16,6 +16,7 @@ function CreateEvent() {
     const [eventLocation, setEventLocation] = useState("");
     const [eventTime, setEventTime] = useState("");
     const [eventDescription, setEventDescription] = useState("");
+    const [eventCapacity, setEventCapacity] = useState("");
     const [loading, setLoading] = useState(false);
 
     // handles form submission
@@ -31,6 +32,7 @@ function CreateEvent() {
                 location: eventLocation,
                 time: eventTime,
                 description: eventDescription,
+                capacity: eventCapacity
             });
 
             let result;
@@ -98,6 +100,16 @@ function CreateEvent() {
                     onChange={(e) => setEventDescription(e.target.value)}
                     placeholder="Event Description"
                     required
+                />
+
+                <input
+                    className="form-input"
+                    type="number"
+                    value={eventCapacity}
+                    onChange={(e) => setEventCapacity(e.target.value)}
+                    placeholder="Event Capacity"
+                    required
+                    min="1"
                 />
 
                 {loading && <LoadingIndicator/>}
