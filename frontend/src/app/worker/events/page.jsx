@@ -5,7 +5,7 @@ import Image from "next/image";
 import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
 
-const Worker = () => {
+const Events = () => {
     const handleEventCreate = async (e) => {
         e.preventDefault();
         try {
@@ -88,4 +88,4 @@ const Worker = () => {
 
 
 //export default withAuth(Admin); ––use when implementing API
-export default withAuth(Worker, ["worker"]);
+export default withAuth(Events, ["worker"]);
