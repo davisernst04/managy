@@ -32,6 +32,7 @@ function CreateEvent() {
                 location: eventLocation,
                 time: eventTime,
                 description: eventDescription,
+                capacity: eventCapacity
             });
 
             let result;
