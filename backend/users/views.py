@@ -94,7 +94,7 @@ class UserSearchViewMultiple(generics.ListAPIView):
         return query_set.filter(**filters)
 
 
-class UserGetiew(generics.RetrieveAPIView):
+class UserGetView(generics.RetrieveAPIView):
     authentication_classes = [JWTAuthentication,
                               SessionAuthentication,
                               BasicAuthentication]

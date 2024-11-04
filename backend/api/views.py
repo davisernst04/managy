@@ -210,6 +210,20 @@ class searchEvents(generics.ListAPIView):
         end=self.kwargs.get('end','')
         return Events.objects.filter(eventDate__range=[start,end])
 
+class searchAmenitiesByName(generics.ListAPIView):
+    serializer_class = AmenitySerializer
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        name = self.kwargs.get('name', '').strip()
+        if name:
+            return Amenity.objects.filter(name__icontains=name)
+        return Amenity.objects.all()
+
+
 class sortingAmeneties(generics.ListAPIView):
     serializer_class = AmenitySerializer
     authentication_classes = [JWTAuthentication,

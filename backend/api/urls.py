@@ -10,6 +10,7 @@ urlpatterns = [
     path("amenity/delete/<int:pk>/", views.AmenityDelete.as_view(), name="delete-amenity"),
     path("amenity/update/<int:pk>/", views.AmenityUpdate.as_view(), name="update-amenity"),
     path("amenity/get_amenity/<int:pk>/", views.sortingAmeneties.as_view(), name="amenity-sort"),
+    path("amenity/search/<str:name>/", views.searchAmenitiesByName.as_view(), name="amenity-search"),
 
     path("amenity/booking/create/", views.createBooking.as_view(), name="amenity-book"),
     path("amenity/booking/view/", views.getBooking.as_view(), name="amenity-book-list"),

@@ -23,5 +23,5 @@ urlpatterns = [
 
     path("user/resetpassword/", userView.RequestPasswordReset.as_view(), name="reset-password-token"),
     path("user/changepassword/<slug:token>/", userView.ResetPassword.as_view(), name="reset-password"),
-    path("user/getinfo/", userView.UserGetiew.as_view(), name="get-user-info")
+    path("user/getinfo/", userView.UserGetView.as_view(), name="get-user-info")
 ]
