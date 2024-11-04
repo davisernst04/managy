@@ -5,9 +5,9 @@ import { useState } from "react";
 import api from "@/api.js";
 import "./createEvent.css";
 import LoadingIndicator from "@/components/LoadingIndicator.jsx";
+import { withAuth } from "@/components/withAuth.jsx";
 
-// logout/page.jsx
-import { navigate } from "@/components/actions";
+const api_createEvent = "/api/event/create/";
 
 // defines a functional component named `CreateEvent`.
 function CreateEvent() {
@@ -19,35 +19,37 @@ function CreateEvent() {
     const [eventCapacity, setEventCapacity] = useState("");
     const [loading, setLoading] = useState(false);
 
+  const createEvent = () => {
+
+    let data1 = {
+        "eventName": eventName,
+        "eventDate": eventDate,
+        "eventLocation": eventLocation,
+        "eventTime": eventTime,
+        "eventDescription": eventDescription,
+        "eventCapacity": eventCapacity
+    };
+    console.log(data1);
+
+    api
+      .post(api_createEvent, data1)
+      .then((res) => {
+        if (res.status === 201) {
+            alert("Event Created! With ID: "+res.data.id+"\nGo to view events");
+            console.log(res.data);
+        }
+        else alert("Failed to make event.");
+      })
+      .catch((err) => alert(err));
+  };
+
     // handles form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            console.log([eventName, eventID, eventDate, eventTime, eventLocation, eventDescription])
-            const res = await api.post("api/event/create/", {
-                name: eventName,
-                date: eventDate,
-                location: eventLocation,
-                time: eventTime,
-                description: eventDescription,
-                capacity: eventCapacity
-            });
-
-            let result;
-            result = res.data;
-            console.log(result.message);
-            console.log(result.id);
-
-            // If event creation successful, show an alert and navigates to the events page? or specific view page maybe
-            if (res.status === 201) {
-                alert("Event created successfully!");
-                //display ID number in alert
-                navigate("/events");
-            } else {
-                alert("Failed to create event");
-            }
+            await createEvent();
         } catch (error) {
             alert("Error creating event: " + error.message);
         } finally { // reset the loading state
@@ -111,8 +113,7 @@ function CreateEvent() {
                     required
                     min="1"
                 />
-
-                {loading && <LoadingIndicator/>}
+                {loading && < LoadingIndicator />}
                 <button className="form-button" type="submit">
                     Create Event
                 </button>
@@ -121,7 +122,7 @@ function CreateEvent() {
     );
 }
 
-export default CreateEvent;
+export default withAuth(CreateEvent, ["worker"]);
 // tailwind version
 /*
 return (
