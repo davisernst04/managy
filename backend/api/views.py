@@ -358,6 +358,11 @@ class EventSelectionCancel(generics.RetrieveUpdateAPIView):
         eventSelect = serializer.save(member=self.request.user)
         return eventSelect
 
+
+#-----------------------------------------------------------------------
+#---------- JAVIER - elr490 --------------------------------------------
+#-----------------------------------------------------------------------
+
 class RecreationalVenueView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = RecreationalVenueSerializer

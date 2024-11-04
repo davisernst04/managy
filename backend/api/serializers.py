@@ -175,6 +175,10 @@ class EventSelectionSerializerView(serializers.ModelSerializer):
         fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id',
                   'author']
 
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
+
 
 class RecreationalVenueSerializer(serializers.ModelSerializer):
     class Meta:

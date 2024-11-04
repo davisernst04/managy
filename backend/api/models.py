@@ -142,6 +142,9 @@ class EventSelection(Booking):
     def isFull(self):
         return (self.membersRegistered.count()) == (self.capacity)
 
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
 
 class RecreationalVenue(models.Model):
     name = models.CharField(max_length=50, unique=True)

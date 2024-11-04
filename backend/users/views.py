@@ -177,6 +177,11 @@ class CreateUserMemberView(generics.CreateAPIView):
         return member
 
 
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
+
+
 class CreateUserAdminView(generics.CreateAPIView):
     serializer_class = AdminSerializer
     permission_classes = [AllowAny]

@@ -32,6 +32,10 @@ urlpatterns = [
     path("event/selection/register/<int:pk>/", views.EventSelectionRegister.as_view(), name="event-register"),
     path("event/selection/register/cancel/<int:pk>/", views.EventSelectionCancel.as_view(), name="event-cancel"),
 
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
+
     path("admin/createuser/", userViews.CreateUserView.as_view(), name="create-user"),
     path("admin/deleteuser/<int:pk>/", userViews.UserDeleteView.as_view(), name="user-delete"),
     path("admin/search/", userViews.UserSearchViewMultiple.as_view(), name="user-search"),
