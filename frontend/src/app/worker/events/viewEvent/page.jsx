@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import "react-datepicker/dist/react-datepicker.css"; // DatePicker's CSS
 import Image from 'next/image';
 import DatePicker from "react-datepicker";
+import { withAuth } from "@/components/withAuth";
 
 /* Three features: being able to display all events (sorted or not),
                    search for a specific event by name,
@@ -224,4 +225,4 @@ function ViewAllEvents() {
     );
 }
 
-export default ViewAllEvents;
+export default withAuth(ViewAllEvents, []);

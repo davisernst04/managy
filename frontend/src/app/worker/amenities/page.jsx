@@ -5,7 +5,9 @@ import Image from "next/image";
 import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
 
+
 const Amenities = () => {
+
     const handleAmenityCreate = async (e) => {
         e.preventDefault();
         try {
