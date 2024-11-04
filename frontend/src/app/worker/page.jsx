@@ -1,11 +1,10 @@
 "use client";
 
-import WorkerHeader from "@/components/WorkerHeader";
-import Image from "next/image";
 import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
+import './welcome.css';
 
-const Worker = () => {
+function WelcomePage() {
     const handleEvent = async (e) => {
         e.preventDefault();
         try {
@@ -24,45 +23,29 @@ const Worker = () => {
         }
     };
 
-
     return (
-        <div className="min-h-screen flex flex-col bg-white text-black">
-            <WorkerHeader />
-            <main className="flex flex-grow items-center justify-center p-8 overflow-y-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
+        <div className="welcome-container">
+            <div className="bg-black bg-opacity-90 rounded-lg p-10 shadow-md flex flex-col items-center justify-center">
+                <h1 className="welcome-title">Welcome to Managy</h1>
+                <h1 className="welcome-text">Worker View</h1>
+                <p className="welcome-text">Choose a section to continue:</p>
+                <div className="button-container">
                     <button
                         onClick={handleEvent}
-                        className="flex flex-col items-center border-4 border-black p-4 shadow-xl bg-orange-100 rounded h-80 transition duration-300 ease-in-out transform hover:bg-orange-200 hover:scale-105"
+                        className="welcome-button"
                     >
-                        <Image
-                            src="/images/admin-user.png"
-                            alt="Manage Users"
-                            width={200}
-                            height={200}
-                            priority
-                            className="mb-4"
-                        />
                         <span className="text-lg">Go to Events</span>
                     </button>
                     <button
                         onClick={handleAmenities}
-                        className="flex flex-col items-center border-4 border-black p-4 shadow-xl bg-orange-100 rounded h-80 transition duration-300 ease-in-out transform hover:bg-orange-200 hover:scale-105"
+                        className="welcome-button"
                     >
-                        <Image
-                            src="/images/amenity-manage.png"
-                            alt="Manage Amenities"
-                            width={200}
-                            height={200}
-                            priority
-                            className="mb-4"
-                        />
                         <span className="text-lg">Go to Amenities</span>
                     </button>
                 </div>
-            </main>
-        </div>);
-};
+            </div>
+        </div>
+    );
+}
 
-
-//export default withAuth(Admin); ––use when implementing API
-export default withAuth(Worker, ["worker"]);
+export default withAuth(WelcomePage, ["worker"]);

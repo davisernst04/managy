@@ -37,7 +37,8 @@ const Events = () => {
     return (
         <div className="min-h-screen flex flex-col bg-white text-black">
             <WorkerHeader />
-            <main className="flex flex-grow items-center justify-center p-8 overflow-y-auto">
+            <main className="flex flex-grow flex-col items-center justify-start p-8 overflow-y-auto">
+                <h1 className="text-black size-20 font-bold mb-4 text-center text-3xl">Events Section</h1>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-6xl">
                     <button
                         onClick={handleEventCreate}

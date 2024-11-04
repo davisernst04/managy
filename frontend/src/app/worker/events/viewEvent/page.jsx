@@ -208,9 +208,11 @@ function ViewAllEvents() {
                             <ul className="space-y-4">
                                 {events.map((event) => (
                                     <li key={event.id} className="bg-orange-100 p-4 rounded-md shadow">
-                                        <h3 className="text-xl font-semibold">{event.name}</h3>
-                                        <p className="text-gray-600">Date: {new Date(event.date).toLocaleDateString()}</p>
-                                        <p className="mt-2">{event.description}</p>
+                                        <h3 className="text-xl font-semibold">{event.eventName}</h3>
+                                        <p className="text-gray-600">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
+                                        <p className="mt-2">{event.eventDescription}</p>
+                                        <p className="mt-2">{event.eventTime}</p>
+                                        <p className="mt-2">{event.eventLocation}</p>
                                     </li>
                                 ))}
                             </ul>

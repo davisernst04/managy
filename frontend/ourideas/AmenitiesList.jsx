@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import api from "../../api";
-import "./createAmenity.css";
+import api from "@/api";
+import "@/app/worker/amenities/createAmenity/createAmenity.css";
 
 function AmenitiesList() {
     const [amenities, setAmenities] = useState([]);
