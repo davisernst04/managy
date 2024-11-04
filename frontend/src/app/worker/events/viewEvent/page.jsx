@@ -33,6 +33,7 @@ function ViewAllEvents() {
 
 
     const getEventsSort = () => {
+        console.log("Sort order: "+sortOrder);
         api
             .get(api_sort+`${sortOrder}/`)
             .then((res) => res.data)
@@ -60,6 +61,7 @@ function ViewAllEvents() {
     // Display events with keyword typed or searched by user
 
     const getEventsName = () => {
+        console.log("Search Name: "+searchName);
         api
             .get(api_eventName+`${searchName}/`)
             .then((res) => res.data)
@@ -84,8 +86,14 @@ function ViewAllEvents() {
     // 3
     // allows user to select a start and end date range to display events in that range
     const getEventsDate = () => {
+        let d1 = startDate.toISOString();
+        d1 = d1.split("T")[0];
+        let d2 = endDate.toISOString();
+        d2 = d2.split("T")[0];
+
+        console.log("Dates: "+d1+" - "+d2);
         api
-            .get(api_eventdate+`${startDate.toISOString()}/${endDate.toISOString()}/`)
+            .get(api_eventdate+`${d1}/${d2}/`)
             .then((res) => res.data)
             .then((data) => {
                 setEvents(data);

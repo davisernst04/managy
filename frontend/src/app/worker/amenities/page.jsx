@@ -6,19 +6,19 @@ import { withAuth } from "@/components/withAuth.jsx";
 import { navigate } from "@/components/actions";
 
 const Amenities = () => {
-    const handleEventCreate = async (e) => {
+    const handleAmenityCreate = async (e) => {
         e.preventDefault();
         try {
-            navigate("/worker/events/createEvent");
+            navigate("/worker/amenities/createAmenity");
         } catch (error) {
             alert(error.message);
         }
     };
 
-    const handleRemindEvent = async (e) => {
+    const handleAmenitySearch = async (e) => {
         e.preventDefault();
         try {
-            navigate("/worker/events/reminderEvent");
+            navigate("/worker/amenities/searchAmenity");
         } catch (error) {
             alert(error.message);
         }
