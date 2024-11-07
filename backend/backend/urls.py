@@ -19,9 +19,14 @@ urlpatterns = [
     path("users/register/admin/", userView.CreateUserAdminView.as_view(), name="register-member"),
     path("users/admin/createuser/", userView.UserFromAdminView.as_view(), name="users-from-admin"),
     path("users/admin/deleteuser/<int:pk>/", userView.DelUserFromAdminView.as_view(), name="delusers-from-admin"),
+
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
+
     path("user/admin/createuserbatch/", userView.UserFromAdminBatchView.as_view(), name="create-users-batch"),
 
     path("user/resetpassword/", userView.RequestPasswordReset.as_view(), name="reset-password-token"),
     path("user/changepassword/<slug:token>/", userView.ResetPassword.as_view(), name="reset-password"),
-    path("user/getinfo/", userView.UserGetiew.as_view(), name="get-user-info")
+    path("user/getinfo/", userView.UserGetView.as_view(), name="get-user-info")
 ]

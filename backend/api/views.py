@@ -210,6 +210,20 @@ class searchEvents(generics.ListAPIView):
         end=self.kwargs.get('end','')
         return Events.objects.filter(eventDate__range=[start,end])
 
+class searchAmenitiesByName(generics.ListAPIView):
+    serializer_class = AmenitySerializer
+    authentication_classes = [JWTAuthentication,
+                              SessionAuthentication,
+                              BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        name = self.kwargs.get('name', '').strip()
+        if name:
+            return Amenity.objects.filter(name__icontains=name)
+        return Amenity.objects.all()
+
+
 class sortingAmeneties(generics.ListAPIView):
     serializer_class = AmenitySerializer
     authentication_classes = [JWTAuthentication,
@@ -343,6 +357,11 @@ class EventSelectionCancel(generics.RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         eventSelect = serializer.save(member=self.request.user)
         return eventSelect
+
+
+#-----------------------------------------------------------------------
+#---------- JAVIER - elr490 --------------------------------------------
+#-----------------------------------------------------------------------
 
 class RecreationalVenueView(generics.CreateAPIView):
     permission_classes = [AllowAny]

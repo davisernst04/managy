@@ -10,6 +10,7 @@ urlpatterns = [
     path("amenity/delete/<int:pk>/", views.AmenityDelete.as_view(), name="delete-amenity"),
     path("amenity/update/<int:pk>/", views.AmenityUpdate.as_view(), name="update-amenity"),
     path("amenity/get_amenity/<int:pk>/", views.sortingAmeneties.as_view(), name="amenity-sort"),
+    path("amenity/search/<str:name>/", views.searchAmenitiesByName.as_view(), name="amenity-search"),
 
     path("amenity/booking/create/", views.createBooking.as_view(), name="amenity-book"),
     path("amenity/booking/view/", views.getBooking.as_view(), name="amenity-book-list"),
@@ -30,6 +31,10 @@ urlpatterns = [
     path("event/selection/view/", views.EventSelectionView.as_view(), name="event-selection-view"),
     path("event/selection/register/<int:pk>/", views.EventSelectionRegister.as_view(), name="event-register"),
     path("event/selection/register/cancel/<int:pk>/", views.EventSelectionCancel.as_view(), name="event-cancel"),
+
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
 
     path("admin/createuser/", userViews.CreateUserView.as_view(), name="create-user"),
     path("admin/deleteuser/<int:pk>/", userViews.UserDeleteView.as_view(), name="user-delete"),

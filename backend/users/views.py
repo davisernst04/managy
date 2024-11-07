@@ -94,7 +94,7 @@ class UserSearchViewMultiple(generics.ListAPIView):
         return query_set.filter(**filters)
 
 
-class UserGetiew(generics.RetrieveAPIView):
+class UserGetView(generics.RetrieveAPIView):
     authentication_classes = [JWTAuthentication,
                               SessionAuthentication,
                               BasicAuthentication]
@@ -177,6 +177,11 @@ class CreateUserMemberView(generics.CreateAPIView):
         return member
 
 
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
+
+
 class CreateUserAdminView(generics.CreateAPIView):
     serializer_class = AdminSerializer
     permission_classes = [AllowAny]
@@ -198,11 +203,11 @@ class CreateUserAdminView(generics.CreateAPIView):
 
 
 class UserFromAdminView(generics.CreateAPIView):
+    serializer_class = UserFromAdminSerl
     authentication_classes = [JWTAuthentication,
                               SessionAuthentication,
                               BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdmin]
-    serializer_class = UserFromAdminSerl
 
     def perform_create(self, serializer):
         admin_id = self.request.user.id
@@ -237,6 +242,10 @@ class UserFromAdminBatchView(generics.CreateAPIView):
     serializer_class = UserFromAdminBatchSerl
 
     def create(self, request, *args, **kwargs):
+        admin_id = request.user.id
+        print("Admin id is.   ", admin_id)
+        admin = Admin.objects.get(id=admin_id)
+        recreational_venue = admin.recreational_venue.first()
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -262,7 +271,7 @@ class UserFromAdminBatchView(generics.CreateAPIView):
                     "first_name": name,
                     "email": email,
                     "role": role,
-                    "recreational_venue_id": None
+                    "recreational_venue_id": int(recreational_venue.id)
                 }
                 done_isd.append(send_post_request_createBatch(data))
 

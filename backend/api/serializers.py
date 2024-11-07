@@ -56,7 +56,9 @@ class AmenitySerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
-        fields = ["id", "eventName", "eventDescription", "eventLocation", "eventCapacity", "eventTime", "eventDate",
+        fields = ["id", "eventName", "eventDescription",
+                  "eventLocation", "eventCapacity",
+                  "eventTime", "eventDate",
                   "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
 
@@ -172,6 +174,10 @@ class EventSelectionSerializerView(serializers.ModelSerializer):
         model = EventSelection
         fields = ['name', 'date', 'description', 'capacity', 'numRegistered', 'membersRegistered', 'created_at', 'id',
                   'author']
+
+#-----------------------------------------------------------------------
+#---------------- JAVIER - elr490 --------------------------------------
+#-----------------------------------------------------------------------
 
 
 class RecreationalVenueSerializer(serializers.ModelSerializer):
