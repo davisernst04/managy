@@ -26,15 +26,6 @@ function ViewAllEvents() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-      const handleDateSelect = (date) => {
-        if (!startDate || (startDate && endDate)) {
-          setStartDate(date);
-          setEndDate(null);
-        } else if (startDate && !endDate && date > startDate) {
-          setEndDate(date);
-        }
-      };
-
     const getEventsSort = () => {
         console.log("Sort order: "+sortOrder);
         api
