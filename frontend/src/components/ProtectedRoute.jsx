@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
 import { jwtDecode } from "jwt-decode";
-import api from "../api.js";
+import api from "@/api.js";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "@/constants";
 
 export async function isAuthorized() {
-
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         try {

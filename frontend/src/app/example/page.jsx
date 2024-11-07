@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import api from "@/api";
-import Note from "@/components/Note"
-import "@/styles/Notes.css"
-
+import Note from "@/components/Note";
+import "@/styles/Notes.css";
 import { withAuth } from "@/components/withAuth.jsx";
 
 function Notes() {
@@ -12,7 +11,7 @@ function Notes() {
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
 
-    useEffect( () => {
+    useEffect(() => {
         getNotes();
     }, []);
 
@@ -86,4 +85,4 @@ function Notes() {
     );
 }
 
-export default withAuth(Notes);
+export default withAuth(Notes, []);

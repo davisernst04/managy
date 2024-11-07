@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import api from '../../api.js';
+import api from '@/api.js';
 import Image from 'next/image';
+import {withAuth} from "@/components/withAuth";
 
 function EventReminder({ eventId }) {
     const [event, setEvent] = useState(null);
@@ -79,4 +80,4 @@ function EventReminder({ eventId }) {
     );
 }
 
-export default EventReminder;
+export default withAuth(EventReminder, ["worker"]);

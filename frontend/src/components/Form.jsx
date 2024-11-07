@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import api from "@/api.js";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants.js";
-import "@/styles/Form.css"
+import {ACCESS_TOKEN, REFRESH_TOKEN, ROLE} from "@/constants.js";
+import "@/styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator.jsx";
 import { navigate } from "./actions.js";
+
+let routeuserinfo = "/user/getinfo/";
 
 // eslint-disable-next-line react/prop-types
 function Form({ route, method }) {
@@ -21,19 +23,41 @@ function Form({ route, method }) {
         /*Avoid submitting the data, first perform other tasks*/
 
         try {
-            const res = await api.post(route, { username, password })
+            const res = await api.post(route, { username, password });
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-                navigate('/example');
+
+                routeuserinfo = routeuserinfo+`?email=${username}`
+                console.log(routeuserinfo);
+                const res2 = await api.get(routeuserinfo );
+                console.log(res2.data);
+
+                const role = res2.data.role; // Using dot notation to get the role
+
+                localStorage.setItem(ROLE, role);
+                console.log("Role is: "+role);
+
+                if (role === "admin") {
+                    navigate("/admin");
+                } else if (role === "member") {
+                    navigate("/member");
+                } else if (role === "worker") {
+                    navigate("/worker");
+                } else {
+                    // If the role doesn't match any known roles, navigate to an example or default page
+                    navigate("/example");
+                }
+
             } else {
                 /*A registered user is redirected to login*/
-                navigate('/login');
+                navigate("/login");
             }
+
         } catch (error) {
-            alert(error)
+            alert(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -45,7 +69,7 @@ function Form({ route, method }) {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                placeholder="Email"
             />
             <input
                 className="myform-input text-black"
@@ -62,4 +86,4 @@ function Form({ route, method }) {
     );
 }
 
-export default Form
+export default Form;

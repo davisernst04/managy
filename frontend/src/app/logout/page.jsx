@@ -1,15 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import {navigate} from "@/components/actions.js";
+import { useEffect } from "react";
+import { navigate } from "@/components/actions.js";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 const Logout = () => {
-
     useEffect(() => {
         const handleLogout = () => {
             localStorage.clear();
-            navigate('/');
+            navigate("/");
         };
 
         handleLogout(); // Call the logout function when the component mounts
