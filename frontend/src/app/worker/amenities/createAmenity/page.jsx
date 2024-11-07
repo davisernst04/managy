@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from "react";
+import { useState} from "react";
 import api from "@/api.js";
-import "@/styles/createAmenity.css"
+import "@/styles/createAmenity.css";
 import LoadingIndicator from "@/components/LoadingIndicator.jsx";
 import { withAuth } from "@/components/withAuth.jsx";
 

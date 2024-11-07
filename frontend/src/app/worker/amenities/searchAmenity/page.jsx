@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import api from "@/api.js";
 import "@/styles/amenitiesPage.css";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import Image from 'next/image';
+import {withAuth} from "@/components/withAuth";
+import Image from "next/image";
 
 const api_all_amenities = "/api/amenity/view/";
 const api_sort_amenitiesName = "/api/amenity/get_amenity/";
 const api_search_amenitiesName = "/api/amenity/search/";
 
-export default function Page() {
+function SearchAmenity() {
 
     const [amenities, setAmenities] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -35,7 +36,7 @@ export default function Page() {
 
     /*Sort by name*/
     const getAmenitiesName = () => {
-        console.log("Sort Option: " + sortOption);
+        console.log("Search Name: " + sortOption);
         api
             .get(api_sort_amenitiesName+`${sortOption}/`)
             .then((res) => res.data)
@@ -91,8 +92,9 @@ export default function Page() {
                 src="/images/house.png"
                 alt="Home Logo"
                 className="amenities-logo"
-                width={500}
-                height={300}
+                width={200}
+                height={200}
+                priority
             />
             <h2 className="amenities-title">Search Amenities</h2>
 
@@ -148,10 +150,10 @@ export default function Page() {
                         <Image
                             src={amenity.image}
                             alt={`${amenity.name} image`}
-                            layout="responsive" // Set layout to responsive
-                            width={1}  // Aspect ratio width (adjust as needed)
-                            height={1}  // Aspect ratio height (adjust as needed)
-                            className="amenity-image rounded-lg mt-2"
+                            className="amenity-image w-full max-w-xs h-auto rounded-lg mt-2"
+                            width={300} // Adjust as needed
+                            height={200} // Adjust as needed
+                            layout="intrinsic" // Maintain aspect ratio
                         />
                     </div>
                 ))}
@@ -160,71 +162,4 @@ export default function Page() {
     );
 }
 
-
-/*
-        <div className="amenities-container">
-            <img src="/images/house.png" alt="Home Logo" className="amenities-logo" />
-            <h2 className="amenities-title">All Amenities</h2>
-
-            { Sorting Controls }
-            <div className="sorting-controls">
-                <label>
-                    Sort by:
-                    <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-                        <option value="name">Name</option>
-                        <option value="section">Section</option>
-                        <option value="created_at">Date</option>
-                    </select>
-                </label>
-                <label>
-                    Order:
-                    <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                </label>
-            </div>
-
-            <div className="search-container">
-                <label>
-                    Search:
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search amenities by name..."
-                    />
-                </label>
-            </div>
-
-            { Amenities List }
-            <div className="amenities-list">
-                {filteredAmenities.map((amenity) => (
-                    <div key={amenity.id} className="amenity-item">
-                        <h3>{amenity.name}</h3>
-                        <p>Description: {amenity.description}</p>
-                        <p>Room Number/ID: {amenity.roomNumber}</p>
-                        <p>Status: {amenity.status}</p>
-                        <p>Rules: {amenity.rules}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-* */
-
-/*const sortAmenities = (option, order) => {
-    const sortedAmenities = [...amenities].sort((a, b) => {
-        if (a[option] < b[option]) return order === 'asc' ? -1 : 1;
-        if (a[option] > b[option]) return order === 'asc' ? 1 : -1;
-        return 0;
-    });
-    setAmenities(sortedAmenities);
-};*/
-
-/*const filteredAmenities = amenities.filter((amenity) =>
-    amenity.name.toLowerCase().includes(searchQuery.toLowerCase())
-);*/
-
-/*useEffect(() => {
-    sortAmenities(sortOption, sortOrder);
-}, [sortOption, sortOrder, amenities]);*/
+export default withAuth(SearchAmenity, ["worker"]);

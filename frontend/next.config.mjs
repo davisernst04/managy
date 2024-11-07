@@ -1,9 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['storage.googleapis.com'], // Permitir imágenes desde Google Cloud Storage
-    },
-    reactStrictMode: true, // Habilitar el modo estricto de React
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com', // Allow images from this domain
+      },
+    ],
+  },
 };
 
 export default nextConfig;

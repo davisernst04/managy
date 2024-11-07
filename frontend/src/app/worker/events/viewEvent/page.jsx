@@ -1,10 +1,10 @@
 'use client'
 
 import api from '@/api.js';
-import { useState, useEffect, useCallback } from 'react';
-import "react-datepicker/dist/react-datepicker.css"; // DatePicker's CSS
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import DatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { withAuth } from "@/components/withAuth";
 
 /* Three features: being able to display all events (sorted or not),
@@ -26,26 +26,16 @@ function ViewAllEvents() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-    // 1
-    // Fetch events when the sort order changes
-    useEffect(() => {
-        getSortEvents();
-    }, []);
+      const handleDateSelect = (date) => {
+        if (!startDate || (startDate && endDate)) {
+          setStartDate(date);
+          setEndDate(null);
+        } else if (startDate && !endDate && date > startDate) {
+          setEndDate(date);
+        }
+      };
 
-
-    const getEventsSort = useCallback( async () => {
-        console.log("Sort order: "+sortOrder);
-        api
-            .get(api_sort+`${sortOrder}/`)
-            .then((res) => res.data)
-            .then((data) => {
-                setEvents(data);
-                console.log(data);
-            })
-            .catch((err) => alert(err));
-    }, [sortOrder]);
-
-    const getEventsSort2 =  () => {
+    const getEventsSort = () => {
         console.log("Sort order: "+sortOrder);
         api
             .get(api_sort+`${sortOrder}/`)
@@ -58,16 +48,23 @@ function ViewAllEvents() {
     };
 
     // Be able to display all events (sorted or not)
-    const getSortEvents = async () => {
+    const fetchEvents = async () => {
         setLoading(true);
+
         try {
-            await getEventsSort2();
+            await getEventsSort();
         } catch (err) {
-            alert('There was an error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
+
+    // 1
+    // Fetch events when the sort order changes
+    useEffect(() => {
+        fetchEvents();
+    }, [sortOrder]);
 
     // 2
     // Display events with keyword typed or searched by user
@@ -89,7 +86,7 @@ function ViewAllEvents() {
         try {
             await getEventsName();
         } catch (err) {
-            alert('There was an error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -123,7 +120,7 @@ function ViewAllEvents() {
         try {
             await getEventsDate();
         } catch (err) {
-            alert('There was an error fetching events: ' + err.message);
+            setError('There was an error fetching events: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -205,12 +202,6 @@ function ViewAllEvents() {
                             <option value={1}>Ascending Date</option>
                             <option value={2}>Descending Date</option>
                         </select>
-                        <button
-                            onClick={getSortEvents}
-                            className="w-full px-4 py-2 bg-orange-100 text-black font-bold rounded-md hover:bg-orange-900 hover:text-white transition duration-300"
-                        >
-                            Apply Sort to events
-                        </button>
                     </div>
 
                     <div>
@@ -242,4 +233,4 @@ function ViewAllEvents() {
     );
 }
 
-export default withAuth(ViewAllEvents, []);
+export default withAuth(ViewAllEvents, ["worker"]);

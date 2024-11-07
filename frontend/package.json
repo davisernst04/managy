@@ -3,31 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.13.0",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "js-datepicker": "^5.18.3",
     "jwt-decode": "^4.0.0",
-    "lucide-react": "^0.453.0",
-    "multer": "^1.4.5-lts.1",
-    "next": "15.0.0",
-    "next-session": "^4.0.5",
+    "next": "15.0.3",
     "react": "^18.3.1",
     "react-datepicker": "^7.5.0",
+    "react-day-picker": "^9.3.0",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "babel-plugin-module-resolver": "^5.0.2",
-    "concurrently": "^9.0.1",
     "eslint": "^8",
-    "eslint-config-next": "15.0.0",
+    "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }
