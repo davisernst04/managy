@@ -218,7 +218,7 @@ function ViewAllEvents() {
                                 {events.map((event) => (
                                     <li key={event.id} className="bg-orange-100 p-4 rounded-md shadow">
                                         <h3 className="text-xl font-semibold">{event.eventName}</h3>
-                                        <p className="text-gray-600">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
+                                        <p className="text-gray-600">Date: {new Date(event.eventDate).toISOString().split('T')[0]}</p>
                                         <p className="mt-2">{event.eventDescription}</p>
                                         <p className="mt-2">{event.eventTime}</p>
                                         <p className="mt-2">{event.eventLocation}</p>
