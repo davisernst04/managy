@@ -26,15 +26,6 @@ function ViewAllEvents() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-      const handleDateSelect = (date) => {
-        if (!startDate || (startDate && endDate)) {
-          setStartDate(date);
-          setEndDate(null);
-        } else if (startDate && !endDate && date > startDate) {
-          setEndDate(date);
-        }
-      };
-
     const getEventsSort = () => {
         console.log("Sort order: "+sortOrder);
         api
@@ -218,7 +209,7 @@ function ViewAllEvents() {
                                 {events.map((event) => (
                                     <li key={event.id} className="bg-orange-100 p-4 rounded-md shadow">
                                         <h3 className="text-xl font-semibold">{event.eventName}</h3>
-                                        <p className="text-gray-600">Date: {new Date(event.eventDate).toLocaleDateString()}</p>
+                                        <p className="text-gray-600">Date: {new Date(event.eventDate).toISOString().split('T')[0]}</p>
                                         <p className="mt-2">{event.eventDescription}</p>
                                         <p className="mt-2">{event.eventTime}</p>
                                         <p className="mt-2">{event.eventLocation}</p>
