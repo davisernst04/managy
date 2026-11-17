@@ -110,3 +110,15 @@ Run these from `frontend/`:
 ## Notes
 
 The repository also includes a helper script, `git-u.bash`, for streamlined local commits. Project-specific configuration, environment variables, and deployment details should be documented alongside the frontend and backend environments as the system evolves.
+
+## Vercel frontend deployment
+
+Import this repository in Vercel and set the **Root Directory** to `frontend`.
+Use the Next.js preset, `npm ci` for installation, and `npm run build` for the
+build. This deploys the frontend, including the homepage, registration, and
+login screens.
+
+The Django backend is separate. Set `NEXT_PUBLIC_API_URL` to a running API to
+use account, booking, and administration workflows. Otherwise the frontend
+retains its legacy Cloud Run API URL, which may no longer be available. A
+successful frontend deployment does not provision a database or start Django.
